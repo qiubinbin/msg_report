@@ -12,6 +12,7 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         self.button_gif = QIcon('5-121204194114.gif')
         self.action_open.triggered.connect(self.openfile)
         self.pushButton_search.setIcon(self.button_gif)
+        self.comboBox_date.currentIndexChanged.connect(self.changetimelist)
         self.comboBox_date.currentIndexChanged.connect(self.showbydateortime)
         self.comboBox_time.currentIndexChanged.connect(self.showbydateortime)
         self.pushButton_search.clicked.connect(self.show216)
@@ -25,6 +26,7 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
     def openfile(self):
         """文件打开显示并生成日期目录"""
         self.display_origin.clear()
+        global dates_list
         dates_list = {}
         global file
         file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', 'C:\\Users\\qiubi\\Desktop',
@@ -44,13 +46,16 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
                 self.display_origin.append(line_html)
                 QtWidgets.QApplication.processEvents()  # 刷新页面,阻止卡顿
             file_opened.close()
-            # 显示初始日期和时间
+            # 显示初始日期，时间会自动调用更新函数
             self.comboBox_date.clear()
-            self.comboBox_time.clear()
             self.comboBox_date.addItems(dates_list.keys())
-            self.comboBox_time.addItems(dates_list[self.comboBox_date.currentText()])
         except:
             pass
+
+    def changetimelist(self):
+        """根据日期选择更新时间列表"""
+        self.comboBox_time.clear()
+        self.comboBox_time.addItems(dates_list[self.comboBox_date.currentText()])
 
     def showbydateortime(self):
         """根据日期选择显示结果"""
