@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
-import sys, re
+from PyQt5.QtCore import QThread, pyqtSignal
+import sys, re, time
 from MessageAnalysis import Ui_Analyzer
 
 
@@ -9,77 +10,90 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         super().__init__()
         self.setupUi(self)
         self.button_gif = QIcon('5-121204194114.gif')
-        self.pushButton_search.setIcon(self.button_gif)
         self.action_open.triggered.connect(self.openfile)
-        self.comboBox_date.currentIndexChanged.connect(self.select_changed)
-        self.comboBox_time.currentIndexChanged.connect(self.text_color)
-        self.pushButton_search.clicked.connect(self.filter)
+        self.pushButton_search.setIcon(self.button_gif)
+        self.comboBox_date.currentIndexChanged.connect(self.showbydateortime)
+        self.comboBox_time.currentIndexChanged.connect(self.showbydateortime)
+        self.pushButton_search.clicked.connect(self.show216)
+        self.action_save.triggered.connect(self.savefile)
+
+    def savefile(self):
+        f = open('.\\result.txt', mode='w', encoding='utf-8')
+        f.write(str(self.display_select.toPlainText()))
+        f.close()
 
     def openfile(self):
-        '''文件打开时处理'''
+        """文件打开显示并生成日期目录"""
         self.display_origin.clear()
+        dates_list = {}
+        global file
         file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', 'C:\\Users\\qiubi\\Desktop',
                                                         'Text Files (*.txt)')
         self.statusbar.showMessage(file)
+        pattern_date = re.compile(r'(?P<date1>2019-\d+-\d+) (?P<date2>\d{2}:\d{2}:\d{2})')
         try:
-            self.file_opened = open(file, mode='r', encoding='utf-8')
-            self.data = self.file_opened.read()
-            self.gen_menu(self.data)
-            # print(self.word(self.data))
-            self.display_origin.setHtml(self.word(self.data))
+            file_opened = open(file, mode='r', encoding='utf-8')
+            for line in file_opened:
+                dates = re.findall(pattern_date, line)
+                if dates:
+                    if dates[0][0] not in dates_list.keys():
+                        dates_list[dates[0][0]] = [dates[0][1]]
+                    else:
+                        dates_list[dates[0][0]].append(dates[0][1])
+                line_html = self.word2html(line, 0)
+                self.display_origin.append(line_html)
+                QtWidgets.QApplication.processEvents()  # 刷新页面,阻止卡顿
+            file_opened.close()
+            # 显示初始日期和时间
+            self.comboBox_date.clear()
+            self.comboBox_time.clear()
+            self.comboBox_date.addItems(dates_list.keys())
+            self.comboBox_time.addItems(dates_list[self.comboBox_date.currentText()])
         except:
             pass
 
-    def gen_menu(self, file):
-        '''创建日期选项'''
-        pattern_date = re.compile(r'(?P<date1>2019-\d+-\d+) (?P<date2>\d{2}:\d{2}:\d{2})')
-        self.dates = re.findall(pattern_date, file)
-        dates_list = {date[0] for date in self.dates}
-        self.comboBox_date.addItems(dates_list)
-
-    def select_changed(self):
-        '''跟随日期变化，创建时间选项'''
-        self.comboBox_time.clear()
-        time_list = [date[1] for date in self.dates if date[0] == self.comboBox_date.currentText()]
-        self.comboBox_time.addItems(time_list)
-        self.text_color()
-
-    def text_color(self):
-        '''文本处理'''
+    def showbydateortime(self):
+        """根据日期选择显示结果"""
         self.display_select.clear()
         pattern_str = self.comboBox_date.currentText() + ' ' + self.comboBox_time.currentText() + r'(?P<content>.+)(?P<date1>2019-\d+-\d+)'
         pattern_date = re.compile(pattern_str, flags=re.S)
-        content_msg = re.search(pattern_date, self.data)
-        html_str = '<font color="#e4508f">' + self.comboBox_date.currentText() + ' ' + self.comboBox_time.currentText() + '</font>'
+        content = open(file, mode='r', encoding='utf-8')
+        content_msg = re.search(pattern_date, content.read())
+        html_str = '<font color="#5ba19b">' + self.comboBox_date.currentText() + ' ' + self.comboBox_time.currentText() + '</font>'
         self.display_select.append(html_str)
         try:
             src = content_msg['content'].strip()
-            src = self.word(src)
+            src = src.replace('\n', '<br/>')
+            src = self.word2html(src, 1)
             self.display_select.append(src.strip())
         except:
             pass
 
-    def filter(self):
-        """获取控制记录"""
+    def show216(self):
+        """根据时间选择显示216开关结果"""
         self.display_select.clear()
+        file_opened = open(file, mode='r', encoding='utf-8').read()
         pattern_str = self.comboBox_date.currentText() + ' ' + self.comboBox_time.currentText() + r'(?P<content>.+)(?P<date1>2019-\d+-\d+)'
         pattern_date = re.compile(pattern_str, flags=re.S)
-        content_msg = re.search(pattern_date, self.data)
-        html_str = '<font color="#e4508f">' + self.comboBox_date.currentText() + ' ' + self.comboBox_time.currentText() + '</font>'
+        content_msg = re.search(pattern_date, file_opened)
+        html_str = '<font color="#5ba19b">' + self.comboBox_date.currentText() + ' ' + self.comboBox_time.currentText() + '</font>'
         self.display_select.append(html_str)
         src = content_msg['content'].strip()
+        # 在时间段中查找216记录
         pattern_216 = re.compile(r'(?P<content_216>TX-.+?F0 A0 (?P<value>0[12]).+\n.+\n)TX')
         record_216 = re.search(pattern_216, src).group('content_216').strip()
-        result_216 = self.word(record_216)
-        self.display_select.clear()
-        self.display_select.setHtml(result_216)
+        result_216 = self.word2html(record_216, 1)
+        self.display_select.append(result_216)
+        self.display_select.setReadOnly(False)  # 打开编辑，方便做笔记
 
-    def word(self, src):
-        '''文本转标记'''
-        src = src.replace('\n', '<br/>')
+    def word2html(self, src, line):
+        """'文本转标记"""
+        if line == 1:
+            src = src.replace('\n', '<br/>')
         src = src.replace('           ', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
-        src = src.replace('TX', '<font color="#ff3796"><strong>TX</strong></font><font>')
-        src = src.replace('RX', '</font><font color="#00faac"><strong>RX</strong></font>')
+        src = src.replace('TX', '<font color="#db2d43"><strong>TX</strong></font>')
+        src = src.replace('RX', '<font color="#00bd56"><strong>RX</strong></font>')
+        src = '<font>' + src + '</font>'
         return src
 
 
