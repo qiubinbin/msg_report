@@ -29,7 +29,7 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         global dates_list
         dates_list = {}
         global file
-        file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', 'C:\\Users\\qiubi\\Desktop',
+        file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', 'C:\\Users\\qiubin1\\Desktop',
                                                         'Text Files (*.txt)')
         self.statusbar.showMessage(file)
         pattern_date = re.compile(r'(?P<date1>2019-\d+-\d+) (?P<date2>\d{2}:\d{2}:\d{2})')
@@ -71,13 +71,15 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
             src = src.replace('\n', '<br/>')
             src = self.word2html(src, 1)
             self.display_select.append(src.strip())
+            content.close()
         except:
             pass
 
     def show216(self):
         """根据时间选择显示216开关结果"""
         self.display_select.clear()
-        file_opened = open(file, mode='r', encoding='utf-8').read()
+        file_temp = open(file, mode='r', encoding='utf-8')
+        file_opened = file_temp.read()
         pattern_str = self.comboBox_date.currentText() + ' ' + self.comboBox_time.currentText() + r'(?P<content>.+)(?P<date1>2019-\d+-\d+)'
         pattern_date = re.compile(pattern_str, flags=re.S)
         content_msg = re.search(pattern_date, file_opened)
@@ -89,6 +91,7 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         record_216 = re.search(pattern_216, src).group('content_216').strip()
         result_216 = self.word2html(record_216, 1)
         self.display_select.append(result_216)
+        file_temp.close()
         self.display_select.setReadOnly(False)  # 打开编辑，方便做笔记
 
     def word2html(self, src, line):
