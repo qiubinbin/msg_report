@@ -68,7 +68,7 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         pattern_str = date + ' ' + time + '\n' + r'(?P<content>.+?)(?P<date1>2019-\d+-\d+)'
         pattern_date = re.compile(pattern_str, flags=re.S)
         content_msg = re.search(pattern_date, file_opened)
-        html_str = '<hr/><br/><font color="#5ba19b">' + date + ' ' + time + '</font>'
+        html_str = '<h1 color="#5ba19b" style="line-height:0.4px">' + date + ' ' + time + '</font>'
         self.display_select.append(html_str)
         src = content_msg['content'].strip()
         # 在时间段中查找216记录
@@ -85,13 +85,16 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
                 search_result.append(line)
             elif pre_signal & bool(re.match(pattern_linematch_send2, line)):
                 search_result.append(line)
+            elif pre_signal & (not bool(re.match(pattern_linematch_send2, line))):
                 pre_signal = False
             elif re.match(pattern_linematch_receive1, line):
                 rev_signal = True
                 search_result.append(line)
             elif rev_signal & bool(re.match(pattern_linematch_receive2, line)):
-                rev_signal = False
                 search_result.append(line)
+            elif rev_signal & (not bool(re.match(pattern_linematch_receive2, line))):
+                rev_signal = False
+
         if search_result:
             for line in search_result:
                 line = self.word2html(line, 0)
@@ -109,7 +112,7 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         src = src.replace('           ', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
         src = src.replace('TX', '<font color="#db2d43"><strong>TX</strong></font>')
         src = src.replace('RX', '<font color="#00bd56"><strong>RX</strong></font>')
-        src = '<font>' + src + '</font>'
+        src = '<p>' + src + '</p>'
         return src
 
 
