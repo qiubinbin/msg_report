@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QRect
 import sys, re, collections, qtawesome
 
 
