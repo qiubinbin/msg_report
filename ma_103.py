@@ -1,5 +1,7 @@
 from PyQt5 import QtWidgets
-import sys, re, collections
+import sys
+import re
+import collections
 from MessageAnalysis import Ui_Analyzer
 
 
@@ -8,29 +10,30 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         super().__init__()
         self.setupUi(self)
         self.edit = False  # 编辑状态
-        self.action_open.triggered.connect(self.openfile)
-        self.pushButton_note.clicked.connect(self.openedit)
-        self.pushButton_save.clicked.connect(self.savefile)
-        self.comboBox_date1.currentIndexChanged.connect(self.changetimelist1)
-        self.comboBox_time1.currentIndexChanged.connect(self.changedatelist2)
-        self.comboBox_date2.currentIndexChanged.connect(self.changetimelist2)
+        self.action_open.triggered.connect(self.open_file)
+        self.pushButton_note.clicked.connect(self.open_edit)
+        self.pushButton_save.clicked.connect(self.save_file)
+        self.comboBox_date1.currentIndexChanged.connect(self.change_timelist_1)
+        self.comboBox_time1.currentIndexChanged.connect(self.change_datelist_2)
+        self.comboBox_date2.currentIndexChanged.connect(self.change_timelist_2)
         self.pushButton_search.clicked.connect(self.search)
-        self.action_save.triggered.connect(self.savefile)
+        self.action_save.triggered.connect(self.save_file)
 
-    def savefile(self):
+    def save_file(self):
         f = open('.\\result.txt', mode='w', encoding='utf-8')
         f.write(str(self.display_select.toPlainText()))
         f.close()
 
-    def openfile(self):
-        """文件打开显示并生成日期目录"""
+    def open_file(self):
+        """文件打开显示并生成日期目录 """
         global dates_list
         dates_list = collections.OrderedDict()
         global file
         file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', 'C:\\Users\\qiubi\\Desktop',
                                                         'Text Files (*.txt)')
         self.statusbar.showMessage("已打开 " + file, msecs=20)
-        pattern_date = re.compile(r'(?P<date1>2019-\d+-\d+) (?P<date2>\d{2}:\d{2}:\d{2})')
+        pattern_date = re.compile(
+            r'(?P<date1>2019-\d+-\d+) (?P<date2>\d{2}:\d{2}:\d{2})')
         try:
             file_opened = open(file, mode='r', encoding='utf-8')
             for line in file_opened:
@@ -43,36 +46,49 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
             file_opened.close()
             # 显示初始日期，时间会自动调用更新函数
             self.comboBox_date1.addItems(dates_list.keys())
+        except BaseException:
+            pass
+
+    def change_timelist_1(self):
+        """根据日期选择更新时间列表1"""
+        try:
+            self.comboBox_time1.clear()
+            self.comboBox_time1.addItems(
+                dates_list[self.comboBox_date1.currentText()])
         except:
             pass
 
-    def changetimelist1(self):
-        """根据日期选择更新时间列表1"""
-        self.comboBox_time1.clear()
-        self.comboBox_time1.addItems(dates_list[self.comboBox_date1.currentText()])
-
-    def changedatelist2(self):
+    def change_datelist_2(self):
         """根据起始时间选择更新结束日期列表"""
         self.comboBox_date2.clear()
-        if dates_list[self.comboBox_date1.currentText()][-1] == self.comboBox_time1.currentText():
-            self.comboBox_date2.addItems([i for i in list(dates_list.keys()) if
-                                          list(dates_list.keys()).index(i) > list(dates_list.keys()).index(
-                                              self.comboBox_date1.currentText())])
-        else:
-            self.comboBox_date2.addItems([i for i in list(dates_list.keys()) if
-                                          list(dates_list.keys()).index(i) >= list(dates_list.keys()).index(
-                                              self.comboBox_date1.currentText())])
+        try:
+            if dates_list[self.comboBox_date1.currentText(
+            )][-1] == self.comboBox_time1.currentText():
+                self.comboBox_date2.addItems([i for i in list(dates_list.keys()) if
+                                              list(dates_list.keys()).index(i) > list(dates_list.keys()).index(
+                                                  self.comboBox_date1.currentText())])
 
-    def changetimelist2(self):
+            else:
+                self.comboBox_date2.addItems([i for i in list(dates_list.keys()) if
+                                              list(dates_list.keys()).index(i) >= list(dates_list.keys()).index(
+                                                  self.comboBox_date1.currentText())])
+        except:
+            pass
+
+    def change_timelist_2(self):
         """根据结束日期变化更新结束时间表"""
         self.comboBox_time2.clear()
-        if self.comboBox_date2.currentText() != self.comboBox_date2.currentText():
-            self.comboBox_time2.addItems(dates_list[self.comboBox_date2.currentText()])
-        else:
-            self.comboBox_time2.addItems([i for i in dates_list[self.comboBox_date1.currentText()] if
-                                          dates_list[self.comboBox_date1.currentText()].index(i) > dates_list[
-                                              self.comboBox_date1.currentText()].index(
-                                              self.comboBox_time1.currentText())])
+        try:
+            if self.comboBox_date2.currentText() != self.comboBox_date1.currentText():
+                self.comboBox_time2.addItems(
+                    dates_list[self.comboBox_date2.currentText()])
+            else:
+                self.comboBox_time2.addItems([i for i in dates_list[self.comboBox_date1.currentText()] if
+                                              dates_list[self.comboBox_date1.currentText()].index(i) > dates_list[
+                                                  self.comboBox_date1.currentText()].index(
+                                                  self.comboBox_time1.currentText())])
+        except:
+            pass
 
     def search(self):
         self.display_select.clear()
@@ -104,14 +120,17 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         """根据时间选择显示216开关结果"""
         file_temp = open(file, mode='r', encoding='utf-8')
         file_opened = file_temp.read()
-        pattern_str = date + ' ' + time + '\n' + r'(?P<content>.+?)(?P<date1>2019-\d+-\d+)'
+        pattern_str = date + ' ' + time + '\n' + \
+                      r'(?P<content>.+?)(?P<date1>2019-\d+-\d+)'
         pattern_date = re.compile(pattern_str, flags=re.S)
         content_msg = re.search(pattern_date, file_opened)
         src = content_msg['content'].strip()
         # 在时间段中查找216记录
-        pattern_linematch_send1 = re.compile(r'(?P<content_216>TX-.+?F0 A0 (?P<value>0[12]).+?)')
+        pattern_linematch_send1 = re.compile(
+            r'(?P<content_216>TX-.+?F0 A0 (?P<value>0[12]).+?)')
         pattern_linematch_send2 = re.compile(r'^\s')
-        pattern_linematch_receive1 = re.compile(r'(?P<content_216>RX-.+?F0 A0 (?P<value>0[12]).+?)')
+        pattern_linematch_receive1 = re.compile(
+            r'(?P<content_216>RX-.+?F0 A0 (?P<value>0[12]).+?)')
         pattern_linematch_receive2 = re.compile(r'^\s')
         search_result = []
         pre_signal = False
@@ -153,13 +172,17 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         """'文本转标记"""
         if line == 1:
             src = src.replace('\n', '<br/>')
-        src = src.replace('           ', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
-        src = src.replace('TX', '<font style="font-weight:bold;color:#db2d43">TX</font>')
-        src = src.replace('RX', '<font style="font-weight:bold;color:#00bd56">RX</font>')
+        src = src.replace(
+            '           ',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
+        src = src.replace(
+            'TX', '<font style="font-weight:bold;color:#db2d43">TX</font>')
+        src = src.replace(
+            'RX', '<font style="font-weight:bold;color:#00bd56">RX</font>')
         src = '<p style="text-align:left">' + src + '</p>'
         return src
 
-    def openedit(self):
+    def open_edit(self):
         if not self.edit:
             self.display_select.setReadOnly(False)  # 打开编辑，方便做笔记
             self.statusbar.showMessage("已开启编辑")
