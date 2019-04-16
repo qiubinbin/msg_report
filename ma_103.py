@@ -117,7 +117,7 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
                     self.show216(list(dates_list.keys())[i], item)
 
     def show216(self, date, time):
-        """ 根据时间选择显示216开关结果"""
+        """根据时间选择显示216开关结果"""
         file_temp = open(file, mode='r', encoding='utf-8')
         file_opened = file_temp.read()
         pattern_str = date + ' ' + time + '\n' + \
