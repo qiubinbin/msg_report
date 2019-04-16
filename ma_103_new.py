@@ -1,21 +1,81 @@
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QRect
 import sys, re, collections, qtawesome
-from MessageAnalysis import Ui_Analyzer
 
 
-class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
+class Msg_als(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
+        self.init_ui()
         self.edit = False  # 编辑状态
         self.action_open.triggered.connect(self.open_file)
         self.pushButton_note.clicked.connect(self.open_edit)
         self.pushButton_save.clicked.connect(self.save_file)
-        self.comboBox_date1.currentIndexChanged.connect(self.change_timelist_1)
-        self.comboBox_time1.currentIndexChanged.connect(self.change_datelist_2)
-        self.comboBox_date2.currentIndexChanged.connect(self.change_timelist_2)
-        self.pushButton_search.clicked.connect(self.search)
-        self.action_save.triggered.connect(self.save_file)
+        # self.comboBox_date1.currentIndexChanged.connect(self.change_timelist_1)
+        # self.comboBox_time1.currentIndexChanged.connect(self.change_datelist_2)
+        # self.comboBox_date2.currentIndexChanged.connect(self.change_timelist_2)
+        # self.pushButton_search.clicked.connect(self.search)
+        # self.action_save.triggered.connect(self.save_file)
+
+    def init_ui(self):
+        """初始化UI"""
+        """菜单栏"""
+        self.action_open = QtWidgets.QAction(qtawesome.icon('fa.folder-open', color='black'), '打开(O)')
+        self.action_open.setShortcut('Ctrl+O')
+        self.action_save = QtWidgets.QAction(qtawesome.icon('fa.save', color='black'), '保存(S)')
+        self.action_save.setShortcut('Ctrl+S')
+        self.menubar = self.menuBar()
+        self.menu_F = self.menubar.addMenu('&文件')
+        self.menu_F.addAction(self.action_open)
+        self.menu_F.addAction(self.action_save)
+        """状态栏"""
+        self.statusbar = QtWidgets.QStatusBar(self)
+        self.statusbar.setEnabled(True)
+        self.statusbar.setObjectName("statusbar")
+        self.setStatusBar(self.statusbar)
+        """主窗口"""
+        self.setFixedSize(1000, 600)
+        self.main_widget = QtWidgets.QWidget()
+        self.main_layout = QtWidgets.QGridLayout()
+        self.main_widget.setLayout(self.main_layout)
+        """左窗口"""
+        self.left_widget = QtWidgets.QWidget()
+        self.left_widget.setObjectName('left_widget')
+        self.left_layout = QtWidgets.QGridLayout()
+        self.left_widget.setLayout(self.left_layout)
+        """右窗口"""
+        self.right_widget = QtWidgets.QWidget()
+        self.right_widget.setObjectName('right_widget')
+        self.right_layout = QtWidgets.QGridLayout()
+        self.right_widget.setLayout(self.right_layout)
+        """设置窗口占位"""
+        self.main_layout.addWidget(self.left_widget, 0, 0, 9, 2)  # 9行2列
+        self.main_layout.addWidget(self.right_widget, 0, 2, 9, 10)  # 9行12列
+        self.setCentralWidget(self.main_widget)
+        """设置部件"""
+        self.pushButton_search = QtWidgets.QPushButton(qtawesome.icon('fa.search', color='white'), "搜索")
+        self.pushButton_search.setObjectName('pushButton_search')
+        self.pushButton_note = QtWidgets.QPushButton(qtawesome.icon('fa.pencil-square-o', color='white'), "笔记")
+        self.pushButton_note.setObjectName('pushButton_note')
+        self.pushButton_save = QtWidgets.QPushButton(qtawesome.icon('fa.save', color='white'), "保存")
+        self.pushButton_save.setObjectName('pushButton_save')
+        self.pushButton_feedback = QtWidgets.QPushButton(qtawesome.icon('fa.telegram', color='white'), "反馈")
+        self.pushButton_feedback.setObjectName('反馈')
+        self.begin_label = QtWidgets.QLabel('开始时间')
+        self.end_label = QtWidgets.QLabel('结束时间')
+        self.display_select = QtWidgets.QTextEdit()
+        """给左窗口添加部件"""
+        self.left_layout.addWidget(self.begin_label, 0, 0, 1, 2)
+        self.left_layout.addWidget(self.end_label, 2, 0, 1, 2)
+        self.left_layout.addWidget(self.pushButton_search, 5, 0, 1, 2)
+        self.left_layout.addWidget(self.pushButton_note, 6, 0, 1, 2)
+        self.left_layout.addWidget(self.pushButton_save, 7, 0, 1, 2)
+        self.left_layout.addWidget(self.pushButton_feedback, 8, 0, 1, 2)
+        """给右窗口添加部件"""
+        self.right_layout.addWidget(self.display_select, 0, 2, 9, 10)
+        self.display_select.setText('hah')
+
+        pass
 
     def save_file(self):
         f = open('.\\result.txt', mode='w', encoding='utf-8')
