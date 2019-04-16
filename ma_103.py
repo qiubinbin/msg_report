@@ -25,7 +25,7 @@ class Msg_als(QtWidgets.QMainWindow, Ui_Analyzer):
         f.close()
 
     def open_file(self):
-        """文件打开显示并生成日期目录"""
+        """文件打开显示并生成日期目录 """
         global dates_list
         dates_list = collections.OrderedDict()
         global file
