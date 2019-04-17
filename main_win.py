@@ -1,12 +1,14 @@
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
-import sys, re, collections, qtawesome
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtGui import QFont,QIcon
+import re, collections, qtawesome
+from feedback_win import FeedBack
 
 
 class Msg_als(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.init_ui()
+        self.feedwin=FeedBack()
         self.edit = False  # 编辑状态
         self.action_open.triggered.connect(self.open_file)
         self.pushButton_note.clicked.connect(self.open_edit)
@@ -15,6 +17,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.comboBox_time1.currentIndexChanged.connect(self.change_datelist_2)
         self.comboBox_date2.currentIndexChanged.connect(self.change_timelist_2)
         self.pushButton_search.clicked.connect(self.search)
+        self.pushButton_feedback.clicked.connect(self.feedwin.show)
         self.action_save.triggered.connect(self.save_file)
 
     def init_ui(self):
@@ -34,6 +37,8 @@ class Msg_als(QtWidgets.QMainWindow):
         self.statusbar.setObjectName("statusbar")
         self.setStatusBar(self.statusbar)
         """主窗口"""
+        self.setWindowTitle('报文分析')
+        self.setWindowIcon(QIcon('images/icon.png'))
         self.setFixedSize(1000, 600)
         self.main_widget = QtWidgets.QWidget()
         self.main_layout = QtWidgets.QGridLayout()
@@ -66,6 +71,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.end_label = QtWidgets.QPushButton('结束时间')
         self.end_label.setObjectName('left_label')
         self.display_select = QtWidgets.QTextEdit()
+        self.display_select.setFont(QFont("Consolas", 8))
         self.display_select.setReadOnly(True)
         self.comboBox_date1 = QtWidgets.QComboBox()
         self.comboBox_date1.setObjectName('left_combobox')
@@ -119,7 +125,8 @@ class Msg_als(QtWidgets.QMainWindow):
         QPushButton#left_button:hover{
         border-left:4px solid red;
         font-weight:700}
-        QPushButton#left_combobox{border:1px solid lightgray}''')
+        QComboBox#left_combobox{color:#4B6EAF;}
+        ''')
         self.display_select.setStyleSheet('''
         QTextEdit{
         color:#000000;
@@ -129,8 +136,7 @@ class Msg_als(QtWidgets.QMainWindow):
         border-top-left-radius:10px;
         border-top-right-radius:10px;
         border-bottom-left-radius:10px;
-        border-bottom-right-radius:10px;
-        font-family:"微软雅黑"}
+        border-bottom-right-radius:10px;}
         ''')
         self.menubar.setStyleSheet('''
         background-color:#FFFFFF;
@@ -146,12 +152,12 @@ class Msg_als(QtWidgets.QMainWindow):
     def save_file(self):
         try:
             path, _ = QtWidgets.QFileDialog.getSaveFileName(self, '打开', 'C:\\', 'Text Files (*.txt)')
+            f = open(path, mode='w', encoding='utf-8')
+            f.write(str(self.display_select.toPlainText()))
+            f.close()
+            self.statusbar.showMessage('已保存至' + path, msecs=700)
         except:
             pass
-        f = open(path, mode='w', encoding='utf-8')
-        f.write(str(self.display_select.toPlainText()))
-        f.close()
-        self.statusbar.showMessage('已保存至' + path, msecs=700)
 
     def open_file(self):
         """文件打开显示并生成日期目录 """
@@ -288,9 +294,13 @@ class Msg_als(QtWidgets.QMainWindow):
         if list:
             for item in result_list:
                 result_str += (self.word2html(item, 0))
-            html = self.display_select.toHtml() + '<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time + '</h2><hr>' + result_str
+            html = '<body>' + self.display_select.toHtml() + \
+                   '<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time + \
+                   '</h2><hr>' + result_str + '</body>'
         else:
-            html = self.display_select.toHtml() + '<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time + '</h2><hr><p style="color:#499C54;text-align:center">无记录</p>'
+            html = '<body>' + self.display_select.toHtml() + \
+                   '<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time \
+                   + '</h2><hr><p style="color:#1c1259;text-align:center;font-family:"等线"">无记录</p>' + '</body>'
         return html
 
     def word2html(self, src, line):
@@ -304,7 +314,7 @@ class Msg_als(QtWidgets.QMainWindow):
             'TX', '<font style="font-weight:bold;color:#db2d43">TX</font>')
         src = src.replace(
             'RX', '<font style="font-weight:bold;color:#00bd56">RX</font>')
-        src = '<p style="text-align:left;color:#BE9117">' + src + '</p>'
+        src = '<p style="text-align:left">' + src + '</p>'
         return src
 
     def open_edit(self):
@@ -316,9 +326,3 @@ class Msg_als(QtWidgets.QMainWindow):
             self.display_select.setReadOnly(True)
             self.statusbar.showMessage("已关闭编辑", msecs=200)
             self.edit = False
-
-
-app = QtWidgets.QApplication(sys.argv)
-win = Msg_als()
-win.show()
-sys.exit(app.exec_())
