@@ -50,10 +50,15 @@ class FeedBack(QtWidgets.QMainWindow):
         self.widget_1.setStyleSheet('''
         QPushButton#button{
         background-color:none;
-        border:none;}
+        border:none;}''')
+        self.send.setStyleSheet('''
         QPushButton#button:hover{
         color:green;
-        font-weight:bolder;}''')
+        font: 75 10pt "微软雅黑";}''')
+        self.cancel.setStyleSheet('''
+        QPushButton#button:hover{
+        color:red;
+        font: 75 10pt "微软雅黑";}''')
         """动作"""
         self.cancel.clicked.connect(self.close)
         self.send.clicked.connect(self.savelog)

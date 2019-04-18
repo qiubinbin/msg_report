@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QFont,QIcon
+from PyQt5.QtGui import QFont
 import re, collections, qtawesome
 from feedback_win import FeedBack
 
@@ -7,30 +7,42 @@ from feedback_win import FeedBack
 class Msg_als(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        self.init_ui()
-        self.feedwin=FeedBack()
+        self.feedwin = FeedBack()
+        self.common_init()
+        self.incoming_init()
+        self.init_action_connect()
         self.edit = False  # 编辑状态
+
+    def init_action_connect(self):
         self.action_open.triggered.connect(self.open_file)
+        self.action_save.triggered.connect(self.save_file)
+        self.incoming_cabinet_201_202.triggered.connect(self.incoming_init)
+        self.feeder_cabinet_211_212_213_214_215_216.triggered.connect(self.feeder_init)
         self.pushButton_note.clicked.connect(self.open_edit)
         self.pushButton_save.clicked.connect(self.save_file)
+        self.pushButton_search.clicked.connect(self.search)
+        self.pushButton_feedback.clicked.connect(self.feedwin.show)
         self.comboBox_date1.currentIndexChanged.connect(self.change_timelist_1)
         self.comboBox_time1.currentIndexChanged.connect(self.change_datelist_2)
         self.comboBox_date2.currentIndexChanged.connect(self.change_timelist_2)
-        self.pushButton_search.clicked.connect(self.search)
-        self.pushButton_feedback.clicked.connect(self.feedwin.show)
-        self.action_save.triggered.connect(self.save_file)
 
-    def init_ui(self):
+    def common_init(self):
         """初始化UI"""
         """菜单栏"""
         self.action_open = QtWidgets.QAction(qtawesome.icon('fa.folder-open', color="black"), '打开(O)')
         self.action_open.setShortcut('Ctrl+O')
         self.action_save = QtWidgets.QAction(qtawesome.icon('fa.save', color="black"), '保存(S)')
         self.action_save.setShortcut('Ctrl+S')
+        self.incoming_cabinet_201_202 = QtWidgets.QAction(qtawesome.icon('fa.share'), '进线柜')
+        self.feeder_cabinet_211_212_213_214_215_216 = QtWidgets.QAction(qtawesome.icon('fa.share'), '馈线柜')
         self.menubar = self.menuBar()
         self.menu_F = self.menubar.addMenu('&文件')
         self.menu_F.addAction(self.action_open)
         self.menu_F.addAction(self.action_save)
+        self.menu_P = self.menubar.addMenu('&协议')
+        self.protocol_103 = self.menu_P.addMenu(qtawesome.icon('fa.file-word-o', color='black'), '&103协议')
+        self.protocol_103.addAction(self.incoming_cabinet_201_202)
+        self.protocol_103.addAction(self.feeder_cabinet_211_212_213_214_215_216)
         """状态栏"""
         self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.setEnabled(True)
@@ -38,7 +50,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.setStatusBar(self.statusbar)
         """主窗口"""
         self.setWindowTitle('报文分析')
-        self.setWindowIcon(QIcon('images/icon.png'))
+        # self.setWindowIcon(QIcon('images/icon.png'))
         self.setFixedSize(1000, 600)
         self.main_widget = QtWidgets.QWidget()
         self.main_layout = QtWidgets.QGridLayout()
@@ -55,12 +67,12 @@ class Msg_als(QtWidgets.QMainWindow):
         self.right_widget.setLayout(self.right_layout)
         """设置窗口占位"""
         self.main_layout.addWidget(self.left_widget, 0, 0, 10, 2)  # 10行2列
-        self.main_layout.addWidget(self.right_widget, 0, 2, 10, 10)  # 10行12列
+        self.main_layout.addWidget(self.right_widget, 0, 2, 10, 10)  # 10行10列
         self.setCentralWidget(self.main_widget)
         """设置部件"""
-        self.pushButton_search = QtWidgets.QPushButton(qtawesome.icon('fa.search', color='#AFB1B3'), "搜索")
+        self.pushButton_search = QtWidgets.QPushButton(qtawesome.icon('fa.search', color='white'), "搜索")
         self.pushButton_search.setObjectName('left_button')
-        self.pushButton_note = QtWidgets.QPushButton(qtawesome.icon('fa.pencil-square-o', color='#AFB1B3'), "笔记")
+        self.pushButton_note = QtWidgets.QPushButton(qtawesome.icon('fa.pencil-square-o', color='white'), "笔记")
         self.pushButton_note.setObjectName('left_button')
         self.pushButton_save = QtWidgets.QPushButton(qtawesome.icon('fa.save', color='white'), "保存")
         self.pushButton_save.setObjectName('left_button')
@@ -81,11 +93,23 @@ class Msg_als(QtWidgets.QMainWindow):
         self.comboBox_date2.setObjectName('left_combobox')
         self.comboBox_time2 = QtWidgets.QComboBox()
         self.comboBox_time2.setObjectName('left_combobox')
-        self.display_widget = QtWidgets.QWidget()
+        self.display_widget = QtWidgets.QFrame()
         self.display_widget.setObjectName('display_widget')
         self.display_layout = QtWidgets.QGridLayout()
         self.display_widget.setLayout(self.display_layout)
-        self.tempwidget = QtWidgets.QWidget()
+        self.transform_widget = QtWidgets.QWidget()
+        self.transform_layout = QtWidgets.QGridLayout()
+        self.transform_widget.setLayout(self.transform_layout)
+        self.label_source = QtWidgets.QPushButton('源数据')
+        self.label_source.setObjectName('label')
+        self.label_protocol = QtWidgets.QPushButton('103')
+        self.label_protocol.setObjectName('label')
+        self.pushButton_execute = QtWidgets.QPushButton(qtawesome.icon('fa.th', color='white'), '')
+        self.pushButton_execute.setObjectName('button')
+        self.pushButton_clear = QtWidgets.QPushButton(qtawesome.icon('fa.undo', color='white'), '')
+        self.pushButton_clear.setObjectName('button')
+        self.display_source = QtWidgets.QTextEdit()
+        self.display_result = QtWidgets.QTextEdit()
         """给左窗口添加部件"""
         self.left_layout.addWidget(self.begin_label, 0, 0, 1, 2)
         self.left_layout.addWidget(self.comboBox_date1, 1, 0, 1, 2)
@@ -99,55 +123,122 @@ class Msg_als(QtWidgets.QMainWindow):
         self.left_layout.addWidget(self.pushButton_feedback, 9, 0, 1, 2)
         """给右窗口添加部件"""
         self.right_layout.addWidget(self.display_widget, 0, 2, 10, 6)
-        self.right_layout.addWidget(self.tempwidget, 0, 8, 10, 6)
-        self.display_layout.addWidget(self.display_select, 0, 2, 1, 1)
+        self.display_layout.addWidget(self.display_select, 0, 2)  # 结果显示窗口
+        self.right_layout.addWidget(self.transform_widget, 0, 8, 10, 5)
+        self.widget_title = QtWidgets.QFrame()
+        self.widget_title_layout = QtWidgets.QHBoxLayout()
+        self.widget_title.setLayout(self.widget_title_layout)
+        self.transform_layout.addWidget(self.widget_title, 0, 8, 1, 5)
+        self.transform_layout.addWidget(self.display_source, 1, 8, 4, 5)
+        self.transform_layout.addWidget(self.display_result, 5, 8, 5, 5)
+        self.widget_title_layout.addWidget(self.label_source, 0)
+        self.widget_title_layout.addWidget(self.label_protocol, 1)
+        self.widget_title_layout.addStretch()
+        self.widget_title_layout.addWidget(self.pushButton_execute, 2)
+        self.widget_title_layout.addWidget(self.pushButton_clear, 3)
+        self.widget_title.setStyleSheet('''
+        background-color: rgb(51, 51, 51);''')
+        self.label_source.setStyleSheet('''border:none;font：75 30pt "等线";color:white''')
+        self.label_protocol.setStyleSheet('''border:none;font：75 30pt "等线";color:white''')
+        self.pushButton_execute.setStyleSheet('''border:none''')
+        self.pushButton_clear.setStyleSheet('''border:none''')
+
+    def incoming_init(self):
+        self.statusbar.showMessage('请打开进线柜日志文件')
+        self.style_incoming()
+
+    def feeder_init(self):
+        self.statusbar.showMessage('请打开馈线柜日志文件')
         """样式表"""
         self.setWindowOpacity(0.99)  # 窗口透明度
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # 设置窗口背景透明
         self.left_widget.setStyleSheet('''
-        QWidget#left_widget{
-        background-color:#232F3F;
-        border-top-left-radius:10px;
-        border-top-right-radius:10px;
-        border-bottom-left-radius:10px;
-        border-bottom-right-radius:10px;
-        }
-        QPushButton{
-        border:none;
-        background-color:none;
-        color:#F49900;}
-        QPushButton#left_label{
-        border:none;
-        border-bottom:2px solid white;
-        font-size:18px;
-        font-weight:700;
-        font-family:"等线"}
-        QPushButton#left_button:hover{
-        border-left:4px solid red;
-        font-weight:700}
-        QComboBox#left_combobox{color:#4B6EAF;}
-        ''')
+            QWidget#left_widget{
+            background-color:qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0 rgba(132, 77, 181, 255), stop:1 rgba(102, 130, 237, 255));
+            border-top-left-radius:10px;
+            border-top-right-radius:10px;
+            border-bottom-left-radius:10px;
+            border-bottom-right-radius:10px;
+            }
+            QPushButton{
+            border:none;
+            background-color:none;
+            color:white;}
+            QPushButton#left_label{
+            border:none;
+            border-bottom:2px solid white;
+            font-size:18px;
+            font-weight:700;
+            font-family:"等线"}
+            QPushButton#left_button:hover{
+            border-left:4px solid white;
+            font-weight:700}
+            QComboBox#left_combobox{color:#4B6EAF;}
+            ''')
         self.display_select.setStyleSheet('''
-        QTextEdit{
-        color:#000000;
-        background-color:#F5F5F5;
-        border:1px solid gray;
-        width:300px;
-        border-top-left-radius:10px;
-        border-top-right-radius:10px;
-        border-bottom-left-radius:10px;
-        border-bottom-right-radius:10px;}
-        ''')
+            QTextEdit{
+            color:#000000;
+            background-color:#F5F5F5;
+            border:1px solid gray;
+            width:300px;
+            border-top-left-radius:10px;
+            border-top-right-radius:10px;
+            border-bottom-left-radius:10px;
+            border-bottom-right-radius:10px;}
+            ''')
         self.menubar.setStyleSheet('''
-        background-color:#FFFFFF;
-        border-bottom:2px solid white;
-        color:black;
-        menu_F:hover{
-        background-color:#4B6EAF;}''')
+            menu_F:hover{
+            background-color:#4B6EAF;}''')
         self.statusbar.setStyleSheet('''
-        background-color:#FFFFFF;''')
+            background-color:#FFFFFF;''')
         self.main_widget.setStyleSheet('''
-        background-color:#FFFFFF;''')
+            background-color:#FFFFFF;''')
+
+    def style_incoming(self):
+        """样式表"""
+        self.setWindowOpacity(0.99)  # 窗口透明度
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # 设置窗口背景透明
+        self.left_widget.setStyleSheet('''
+            QWidget#left_widget{
+            background-color:#232F3F;
+            border-top-left-radius:10px;
+            border-top-right-radius:10px;
+            border-bottom-left-radius:10px;
+            border-bottom-right-radius:10px;
+            }
+            QPushButton{
+            border:none;
+            background-color:none;
+            color:#F49900;}
+            QPushButton#left_label{
+            border:none;
+            border-bottom:2px solid white;
+            font-size:18px;
+            font-weight:700;
+            font-family:"等线"}
+            QPushButton#left_button:hover{
+            border-left:4px solid red;
+            font-weight:700}
+            QComboBox#left_combobox{color:#4B6EAF;}
+            ''')
+        self.display_select.setStyleSheet('''
+            QTextEdit{
+            color:#000000;
+            background-color:#F5F5F5;
+            border:1px solid gray;
+            width:300px;
+            border-top-left-radius:10px;
+            border-top-right-radius:10px;
+            border-bottom-left-radius:10px;
+            border-bottom-right-radius:10px;}
+            ''')
+        self.menubar.setStyleSheet('''
+            menu_F:hover{
+            background-color:#4B6EAF;}''')
+        self.statusbar.setStyleSheet('''
+            background-color:#FFFFFF;''')
+        self.main_widget.setStyleSheet('''
+            background-color:#FFFFFF;''')
 
     def save_file(self):
         try:
@@ -228,28 +319,31 @@ class Msg_als(QtWidgets.QMainWindow):
     def search(self):
         self.display_select.clear()
         # 按时间段进行搜索显示
-        for i in range(list(dates_list.keys()).index(self.comboBox_date1.currentText()),
-                       list(dates_list.keys()).index(self.comboBox_date2.currentText()) + 1):
-            if self.comboBox_date1.currentText() == self.comboBox_date2.currentText():
-                for item in dates_list[list(dates_list.keys())[i]]:
-                    if dates_list[
-                        list(dates_list.keys())[i]].index(self.comboBox_time2.currentText()) >= dates_list[
-                        list(dates_list.keys())[i]].index(item) >= dates_list[
-                        list(dates_list.keys())[i]].index(self.comboBox_time1.currentText()):
+        try:
+            for i in range(list(dates_list.keys()).index(self.comboBox_date1.currentText()),
+                           list(dates_list.keys()).index(self.comboBox_date2.currentText()) + 1):
+                if self.comboBox_date1.currentText() == self.comboBox_date2.currentText():
+                    for item in dates_list[list(dates_list.keys())[i]]:
+                        if dates_list[
+                            list(dates_list.keys())[i]].index(self.comboBox_time2.currentText()) >= dates_list[
+                            list(dates_list.keys())[i]].index(item) >= dates_list[
+                            list(dates_list.keys())[i]].index(self.comboBox_time1.currentText()):
+                            self.show216(list(dates_list.keys())[i], item)
+                elif list(dates_list.keys()).index(self.comboBox_date1.currentText()) == i:
+                    for item in dates_list[list(dates_list.keys())[i]]:
+                        if dates_list[list(dates_list.keys())[i]].index(item) >= dates_list[
+                            list(dates_list.keys())[i]].index(self.comboBox_time1.currentText()):
+                            self.show216(list(dates_list.keys())[i], item)
+                elif list(dates_list.keys()).index(self.comboBox_date2.currentText()) == i:
+                    for item in dates_list[list(dates_list.keys())[i]]:
+                        if dates_list[list(dates_list.keys())[i]].index(item) <= dates_list[
+                            list(dates_list.keys())[i]].index(self.comboBox_time2.currentText()):
+                            self.show216(list(dates_list.keys())[i], item)
+                else:
+                    for item in dates_list[list(dates_list.keys())[i]]:
                         self.show216(list(dates_list.keys())[i], item)
-            elif list(dates_list.keys()).index(self.comboBox_date1.currentText()) == i:
-                for item in dates_list[list(dates_list.keys())[i]]:
-                    if dates_list[list(dates_list.keys())[i]].index(item) >= dates_list[
-                        list(dates_list.keys())[i]].index(self.comboBox_time1.currentText()):
-                        self.show216(list(dates_list.keys())[i], item)
-            elif list(dates_list.keys()).index(self.comboBox_date2.currentText()) == i:
-                for item in dates_list[list(dates_list.keys())[i]]:
-                    if dates_list[list(dates_list.keys())[i]].index(item) <= dates_list[
-                        list(dates_list.keys())[i]].index(self.comboBox_time2.currentText()):
-                        self.show216(list(dates_list.keys())[i], item)
-            else:
-                for item in dates_list[list(dates_list.keys())[i]]:
-                    self.show216(list(dates_list.keys())[i], item)
+        except:
+            pass
 
     def show216(self, date, time):
         """ 根据时间选择显示216开关结果"""
@@ -294,13 +388,14 @@ class Msg_als(QtWidgets.QMainWindow):
         if list:
             for item in result_list:
                 result_str += (self.word2html(item, 0))
-            html = '<body>' + self.display_select.toHtml() + \
+            html = '<body background-color: #0033FF>' + self.display_select.toHtml() + \
                    '<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time + \
                    '</h2><hr>' + result_str + '</body>'
         else:
-            html = '<body>' + self.display_select.toHtml() + \
+            html = '<body background-color: #0033FF>' + self.display_select.toHtml() + \
                    '<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time \
-                   + '</h2><hr><p style="color:#1c1259;text-align:center;font-family:"等线"">无记录</p>' + '</body>'
+                   + '</h2><hr style="height:1px;border:none;border-top:1px dashed #0066CC;">' \
+                     '<p style="color:#1c1259;text-align:center;font-family:"等线"">无记录</p>' + '</body>'
         return html
 
     def word2html(self, src, line):
