@@ -20,7 +20,7 @@ class FeedBack(QtWidgets.QMainWindow):
         self.setCentralWidget(self.main_widget)
         self.label_content = QtWidgets.QPushButton(qtawesome.icon('fa.sticky-note', color='#272636'), '内容')
         self.label_content.setObjectName('label')
-        self.label=QtWidgets.QPushButton('意见反馈')
+        self.label = QtWidgets.QPushButton('意见反馈')
         self.content = QtWidgets.QTextEdit()
         self.content.setObjectName('content')
         self.widget_1 = QtWidgets.QWidget()
@@ -39,7 +39,7 @@ class FeedBack(QtWidgets.QMainWindow):
         self.main_widget.setStyleSheet('''
         background:#F5F5F5;
         font-family:'等线';''')
-        self.label.setStyleSheet('''border:none;text-align:left''')
+        self.label.setStyleSheet('''border:none;text-align:left''')  # 设置文字居左
         self.content.setStyleSheet('''
         background-color:#F5F5F5;
         border:1px solid gray;
@@ -66,7 +66,7 @@ class FeedBack(QtWidgets.QMainWindow):
     def savelog(self):
         file = open('.\\log.txt', mode='a', encoding='utf-8')
         file.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + '\n')
-        file.write( self.content.toPlainText() + '\n')
+        file.write(self.content.toPlainText() + '\n')
         file.write('***********************************************\n')
         file.close()
         QCoreApplication.quit()

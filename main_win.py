@@ -102,9 +102,9 @@ class Msg_als(QtWidgets.QMainWindow):
         self.transform_widget.setLayout(self.transform_layout)
         self.label_source = QtWidgets.QPushButton('源数据')
         self.label_source.setObjectName('label')
-        self.label_protocol = QtWidgets.QPushButton('103')
+        self.label_protocol = QtWidgets.QPushButton('103规约')
         self.label_protocol.setObjectName('label')
-        self.pushButton_execute = QtWidgets.QPushButton(qtawesome.icon('fa.th', color='white'), '')
+        self.pushButton_execute = QtWidgets.QPushButton(qtawesome.icon('fa.download', color='white'), '')
         self.pushButton_execute.setObjectName('button')
         self.pushButton_clear = QtWidgets.QPushButton(qtawesome.icon('fa.undo', color='white'), '')
         self.pushButton_clear.setObjectName('button')
@@ -132,15 +132,17 @@ class Msg_als(QtWidgets.QMainWindow):
         self.transform_layout.addWidget(self.display_source, 1, 8, 4, 5)
         self.transform_layout.addWidget(self.display_result, 5, 8, 5, 5)
         self.widget_title_layout.addWidget(self.label_source, 0)
+        self.widget_title_layout.addStretch(6)  # 预留空白，调整布局
         self.widget_title_layout.addWidget(self.label_protocol, 1)
-        self.widget_title_layout.addStretch()
-        self.widget_title_layout.addWidget(self.pushButton_execute, 2，QtCore.Qt.AlignRight)
-        self.widget_title_layout.addWidget(self.pushButton_clear, 3, QtCore.Qt.AlignRight)
+        self.widget_title_layout.addStretch(6)
+        self.widget_title_layout.addWidget(self.pushButton_execute, 2)
+        self.widget_title_layout.addWidget(self.pushButton_clear, 3)
+        self.display_source.setContentsMargins(0, 0, 0, 0)
         self.widget_title.setStyleSheet('''
-        background-color: rgb(51, 51, 51);''')
-        self.label_source.setStyleSheet('''border:none;font：75 30pt "等线";color:white''')
-        self.label_protocol.setStyleSheet('''border:none;font：75 30pt "等线";color:white''')
-        self.pushButton_execute.setStyleSheet('''border:none''')
+        background-color: #242F3F;''')
+        self.label_source.setStyleSheet('''border:none;font: 75 10pt "微软雅黑";color:#F49900''')
+        self.label_protocol.setStyleSheet('''border:none;font: 75 10pt "微软雅黑";color:#F49900''')
+        self.pushButton_execute.setStyleSheet('''border:none;QPushButton#button:hover{color:red}''')
         self.pushButton_clear.setStyleSheet('''border:none''')
 
     def incoming_init(self):
@@ -272,7 +274,7 @@ class Msg_als(QtWidgets.QMainWindow):
             file_opened.close()
             # 显示初始日期，时间会自动调用更新函数
             self.comboBox_date1.addItems(dates_list.keys())
-        except BaseException:
+        except:
             pass
 
     def change_timelist_1(self):
