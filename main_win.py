@@ -134,8 +134,8 @@ class Msg_als(QtWidgets.QMainWindow):
         self.widget_title_layout.addWidget(self.label_source, 0)
         self.widget_title_layout.addWidget(self.label_protocol, 1)
         self.widget_title_layout.addStretch()
-        self.widget_title_layout.addWidget(self.pushButton_execute, 2)
-        self.widget_title_layout.addWidget(self.pushButton_clear, 3)
+        self.widget_title_layout.addWidget(self.pushButton_execute, 2，QtCore.Qt.AlignRight)
+        self.widget_title_layout.addWidget(self.pushButton_clear, 3, QtCore.Qt.AlignRight)
         self.widget_title.setStyleSheet('''
         background-color: rgb(51, 51, 51);''')
         self.label_source.setStyleSheet('''border:none;font：75 30pt "等线";color:white''')
