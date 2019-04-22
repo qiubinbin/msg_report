@@ -4,6 +4,20 @@ import re, collections, qtawesome
 from feedback_win import FeedBack
 
 
+class Button(QtWidgets.QPushButton):
+    def __init__(self):
+        super().__init__()
+
+    def enterEvent(self, a0: QtCore.QEvent):
+        """定义执行按钮鼠标事件"""
+        if self.enterEvent:
+            self.setIcon(qtawesome.icon('fa.download', color='red'))
+
+    def leaveEvent(self, a0: QtCore.QEvent):
+        if not self.leaveEvent:
+            self.setIcon(qtawesome.icon('fa.download', color='white'))
+
+
 class Msg_als(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -25,6 +39,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.comboBox_date1.currentIndexChanged.connect(self.change_timelist_1)
         self.comboBox_time1.currentIndexChanged.connect(self.change_datelist_2)
         self.comboBox_date2.currentIndexChanged.connect(self.change_timelist_2)
+        # self.pushButton_execute
 
     def common_init(self):
         """初始化UI"""
@@ -98,16 +113,18 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_layout = QtWidgets.QGridLayout()
         self.display_widget.setLayout(self.display_layout)
         self.transform_widget = QtWidgets.QWidget()
+        self.transform_widget.setObjectName('transform_widget')
         self.transform_layout = QtWidgets.QGridLayout()
         self.transform_widget.setLayout(self.transform_layout)
         self.label_source = QtWidgets.QPushButton('源数据')
         self.label_source.setObjectName('label')
         self.label_protocol = QtWidgets.QPushButton('103规约')
         self.label_protocol.setObjectName('label')
-        self.pushButton_execute = QtWidgets.QPushButton(qtawesome.icon('fa.download', color='white'), '')
-        self.pushButton_execute.setObjectName('button')
+        self.pushButton_execute = Button()
+        self.pushButton_execute.setIcon(qtawesome.icon('fa.download', color='white'))
+        self.pushButton_execute.setObjectName('button_execute')
         self.pushButton_clear = QtWidgets.QPushButton(qtawesome.icon('fa.undo', color='white'), '')
-        self.pushButton_clear.setObjectName('button')
+        self.pushButton_clear.setObjectName('button_clear')
         self.display_source = QtWidgets.QTextEdit()
         self.display_result = QtWidgets.QTextEdit()
         """给左窗口添加部件"""
@@ -126,6 +143,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_layout.addWidget(self.display_select, 0, 2)  # 结果显示窗口
         self.right_layout.addWidget(self.transform_widget, 0, 8, 10, 5)
         self.widget_title = QtWidgets.QFrame()
+        self.widget_title.setObjectName('title')
         self.widget_title_layout = QtWidgets.QHBoxLayout()
         self.widget_title.setLayout(self.widget_title_layout)
         self.transform_layout.addWidget(self.widget_title, 0, 8, 1, 5)
@@ -138,12 +156,11 @@ class Msg_als(QtWidgets.QMainWindow):
         self.widget_title_layout.addWidget(self.pushButton_execute, 2)
         self.widget_title_layout.addWidget(self.pushButton_clear, 3)
         self.display_source.setContentsMargins(0, 0, 0, 0)
-        self.widget_title.setStyleSheet('''
-        background-color: #242F3F;''')
-        self.label_source.setStyleSheet('''border:none;font: 75 10pt "微软雅黑";color:#F49900''')
-        self.label_protocol.setStyleSheet('''border:none;font: 75 10pt "微软雅黑";color:#F49900''')
-        self.pushButton_execute.setStyleSheet('''border:none;QPushButton#button:hover{color:red}''')
-        self.pushButton_clear.setStyleSheet('''border:none''')
+        icon = qtawesome.icon('fa.download', color='red')
+        self.transform_widget.setStyleSheet('''
+        QFrame#title{background-color: #242F3F;}
+        QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
+        # print(self.pushButton_execute.icon().)
 
     def incoming_init(self):
         self.statusbar.showMessage('请打开进线柜日志文件')
