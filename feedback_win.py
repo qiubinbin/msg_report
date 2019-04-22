@@ -69,7 +69,7 @@ class FeedBack(QtWidgets.QMainWindow):
         file.write(self.content.toPlainText() + '\n')
         file.write('***********************************************\n')
         file.close()
-        QCoreApplication.quit()
+        self.close()
 
 
 if __name__ == '__main__':  # 本地文件测试
