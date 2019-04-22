@@ -14,7 +14,7 @@ class Button(QtWidgets.QPushButton):
             self.setIcon(qtawesome.icon('fa.download', color='red'))
 
     def leaveEvent(self, a0: QtCore.QEvent):
-        if not self.leaveEvent:
+        if self.leaveEvent:
             self.setIcon(qtawesome.icon('fa.download', color='white'))
 
 
