@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file 'MessageAnalysis.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_Analyzer(object):
     def setupUi(self, Analyzer):
@@ -174,4 +175,5 @@ class Ui_Analyzer(object):
         self.action_open.setShortcut(_translate("Analyzer", "Ctrl+O"))
         self.action_save.setText(_translate("Analyzer", "保存(S)"))
         self.action_save.setShortcut(_translate("Analyzer", "Ctrl+S"))
+
 

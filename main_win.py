@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont
 import re, collections, qtawesome
 from feedback_win import FeedBack
 
