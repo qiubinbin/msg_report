@@ -5,17 +5,21 @@ from feedback_win import FeedBack
 
 
 class Button(QtWidgets.QPushButton):
-    def __init__(self):
+    """复写QPushButton"""
+
+    def __init__(self, icon: str):
         super().__init__()
+        self.btn_icon = icon
+        self.setIcon(qtawesome.icon(self.btn_icon, color='white'))  # 初始图标颜色
 
     def enterEvent(self, a0: QtCore.QEvent):
         """定义执行按钮鼠标事件"""
         if self.enterEvent:
-            self.setIcon(qtawesome.icon('fa.download', color='red'))
+            self.setIcon(qtawesome.icon(self.btn_icon, color='red'))
 
     def leaveEvent(self, a0: QtCore.QEvent):
         if self.leaveEvent:
-            self.setIcon(qtawesome.icon('fa.download', color='white'))
+            self.setIcon(qtawesome.icon(self.btn_icon, color='white'))
 
 
 class Msg_als(QtWidgets.QMainWindow):
@@ -39,7 +43,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.comboBox_date1.currentIndexChanged.connect(self.change_timelist_1)
         self.comboBox_time1.currentIndexChanged.connect(self.change_datelist_2)
         self.comboBox_date2.currentIndexChanged.connect(self.change_timelist_2)
-        # self.pushButton_execute
+        self.pushButton_clear.clicked.connect(self.clear)
 
     def common_init(self):
         """初始化UI"""
@@ -71,9 +75,9 @@ class Msg_als(QtWidgets.QMainWindow):
         self.main_layout = QtWidgets.QGridLayout()
         self.main_widget.setLayout(self.main_layout)
         """左窗口"""
-        self.left_widget = QtWidgets.QWidget()
+        self.left_widget = QtWidgets.QFrame()
         self.left_widget.setObjectName('left_widget')
-        self.left_layout = QtWidgets.QGridLayout()
+        self.left_layout = QtWidgets.QVBoxLayout()
         self.left_widget.setLayout(self.left_layout)
         """右窗口"""
         self.right_widget = QtWidgets.QWidget()
@@ -120,34 +124,44 @@ class Msg_als(QtWidgets.QMainWindow):
         self.label_source.setObjectName('label')
         self.label_protocol = QtWidgets.QPushButton('103规约')
         self.label_protocol.setObjectName('label')
-        self.pushButton_execute = Button()
-        self.pushButton_execute.setIcon(qtawesome.icon('fa.download', color='white'))
+        self.pushButton_execute = Button('fa.download')
         self.pushButton_execute.setObjectName('button_execute')
-        self.pushButton_clear = QtWidgets.QPushButton(qtawesome.icon('fa.undo', color='white'), '')
+        self.pushButton_execute.setToolTip('分析')
+        self.pushButton_clear = Button('fa.undo')
         self.pushButton_clear.setObjectName('button_clear')
+        self.pushButton_clear.setToolTip('清空')
         self.display_source = QtWidgets.QTextEdit()
+        self.display_source.setToolTip('请在此处输入数据源')
         self.display_result = QtWidgets.QTextEdit()
         """给左窗口添加部件"""
-        self.left_layout.addWidget(self.begin_label, 0, 0, 1, 2)
-        self.left_layout.addWidget(self.comboBox_date1, 1, 0, 1, 2)
-        self.left_layout.addWidget(self.comboBox_time1, 2, 0, 1, 2)
-        self.left_layout.addWidget(self.end_label, 3, 0, 1, 2)
-        self.left_layout.addWidget(self.comboBox_date2, 4, 0, 1, 2)
-        self.left_layout.addWidget(self.comboBox_time2, 5, 0, 1, 2)
-        self.left_layout.addWidget(self.pushButton_search, 6, 0, 1, 2)
-        self.left_layout.addWidget(self.pushButton_note, 7, 0, 1, 2)
-        self.left_layout.addWidget(self.pushButton_save, 8, 0, 1, 2)
-        self.left_layout.addWidget(self.pushButton_feedback, 9, 0, 1, 2)
+        self.left_layout.addWidget(self.begin_label, 0)
+        self.left_layout.addWidget(self.comboBox_date1, 1)
+        self.left_layout.addWidget(self.comboBox_time1, 2)
+        self.left_layout.addWidget(self.end_label, 3)
+        self.left_layout.addWidget(self.comboBox_date2, 4)
+        self.left_layout.addWidget(self.comboBox_time2, 5)
+        self.left_layout.addWidget(self.pushButton_search, 6)
+        self.left_layout.addWidget(self.pushButton_note, 7)
+        self.left_layout.addWidget(self.pushButton_save, 8)
+        self.left_layout.addWidget(self.pushButton_feedback, 9)
         """给右窗口添加部件"""
         self.right_layout.addWidget(self.display_widget, 0, 2, 10, 6)
+        self.display_layout.setContentsMargins(0, 0, 0, 0)
         self.display_layout.addWidget(self.display_select, 0, 2)  # 结果显示窗口
         self.right_layout.addWidget(self.transform_widget, 0, 8, 10, 5)
         self.widget_title = QtWidgets.QFrame()
         self.widget_title.setObjectName('title')
         self.widget_title_layout = QtWidgets.QHBoxLayout()
         self.widget_title.setLayout(self.widget_title_layout)
-        self.transform_layout.addWidget(self.widget_title, 0, 8, 1, 5)
-        self.transform_layout.addWidget(self.display_source, 1, 8, 4, 5)
+        self.widget_uptitle = QtWidgets.QFrame()
+        self.widget_uptitle_layout = QtWidgets.QVBoxLayout()
+        self.widget_uptitle.setLayout(self.widget_uptitle_layout)
+        self.widget_uptitle_layout.setContentsMargins(0, 0, 0, 0)
+        self.widget_uptitle_layout.setSpacing(0)  # 取消默认间隔
+        self.widget_uptitle_layout.addWidget(self.widget_title, 0)
+        self.widget_uptitle_layout.addWidget(self.display_source, 1)
+        self.transform_layout.setContentsMargins(0, 0, 0, 0)
+        self.transform_layout.addWidget(self.widget_uptitle, 0, 8, 5, 5)
         self.transform_layout.addWidget(self.display_result, 5, 8, 5, 5)
         self.widget_title_layout.addWidget(self.label_source, 0)
         self.widget_title_layout.addStretch(6)  # 预留空白，调整布局
@@ -158,9 +172,8 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_source.setContentsMargins(0, 0, 0, 0)
         icon = qtawesome.icon('fa.download', color='red')
         self.transform_widget.setStyleSheet('''
-        QFrame#title{background-color: #242F3F;}
+        QFrame#title{background-color: #242F3F;border-bottom:1px solid #305f72}
         QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
-        # print(self.pushButton_execute.icon().)
 
     def incoming_init(self):
         self.statusbar.showMessage('请打开进线柜日志文件')
@@ -172,7 +185,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.setWindowOpacity(0.99)  # 窗口透明度
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # 设置窗口背景透明
         self.left_widget.setStyleSheet('''
-            QWidget#left_widget{
+            QFrame#left_widget{
             background-color:qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0 rgba(132, 77, 181, 255), stop:1 rgba(102, 130, 237, 255));
             border-top-left-radius:10px;
             border-top-right-radius:10px;
@@ -199,12 +212,7 @@ class Msg_als(QtWidgets.QMainWindow):
             color:#000000;
             background-color:#F5F5F5;
             border:1px solid gray;
-            width:300px;
-            border-top-left-radius:10px;
-            border-top-right-radius:10px;
-            border-bottom-left-radius:10px;
-            border-bottom-right-radius:10px;}
-            ''')
+            width:300px;}''')
         self.menubar.setStyleSheet('''
             menu_F:hover{
             background-color:#4B6EAF;}''')
@@ -218,7 +226,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.setWindowOpacity(0.99)  # 窗口透明度
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # 设置窗口背景透明
         self.left_widget.setStyleSheet('''
-            QWidget#left_widget{
+            QFrame#left_widget{
             background-color:#232F3F;
             border-top-left-radius:10px;
             border-top-right-radius:10px;
@@ -245,12 +253,7 @@ class Msg_als(QtWidgets.QMainWindow):
             color:#000000;
             background-color:#F5F5F5;
             border:1px solid gray;
-            width:300px;
-            border-top-left-radius:10px;
-            border-top-right-radius:10px;
-            border-bottom-left-radius:10px;
-            border-bottom-right-radius:10px;}
-            ''')
+            width:300px;}''')
         self.menubar.setStyleSheet('''
             menu_F:hover{
             background-color:#4B6EAF;}''')
@@ -258,6 +261,10 @@ class Msg_als(QtWidgets.QMainWindow):
             background-color:#FFFFFF;''')
         self.main_widget.setStyleSheet('''
             background-color:#FFFFFF;''')
+
+    def clear(self):
+        self.display_source.clear()
+        self.display_result.clear()
 
     def save_file(self):
         try:
