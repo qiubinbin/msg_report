@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QFont
 import re, collections, qtawesome
 from feedback_win import FeedBack
@@ -13,13 +13,34 @@ class Button(QtWidgets.QPushButton):
         self.setIcon(qtawesome.icon(self.btn_icon, color='white'))  # 初始图标颜色
 
     def enterEvent(self, a0: QtCore.QEvent):
-        """定义执行按钮鼠标事件"""
+        """复写鼠标进入事件"""
         if self.enterEvent:
             self.setIcon(qtawesome.icon(self.btn_icon, color='red'))
 
     def leaveEvent(self, a0: QtCore.QEvent):
+        """复写鼠标离开事件"""
         if self.leaveEvent:
             self.setIcon(qtawesome.icon(self.btn_icon, color='white'))
+
+
+class TextView(QtWidgets.QTextEdit):
+    def __init__(self):
+        super().__init__()
+        self.clipboard = QtWidgets.QApplication.clipboard()
+        self.setContextMenuPolicy(
+            QtCore.Qt.CustomContextMenu)  # 将ContextMenuPolicy设置为Qt.CustomContextMenu,否则无法使用customContextMenuRequested信号
+        self.customContextMenuRequested.connect(self.showmenu)
+        self.action_paste = QtWidgets.QAction(qtawesome.icon('fa.clipboard', color='black'), '粘贴')
+        self.action_paste.setShortcut('Ctrl+P')
+        self.menu = QtWidgets.QMenu()
+        self.menu.addAction(self.action_paste)
+        self.action_paste.triggered.connect(self.text)
+
+    def showmenu(self):
+        self.menu.exec_(QtGui.QCursor.pos())
+
+    def text(self):
+        self.setHtml(self.clipboard.text())
 
 
 class Msg_als(QtWidgets.QMainWindow):
@@ -55,11 +76,11 @@ class Msg_als(QtWidgets.QMainWindow):
         self.incoming_cabinet_201_202 = QtWidgets.QAction(qtawesome.icon('fa.share'), '进线柜')
         self.feeder_cabinet_211_212_213_214_215_216 = QtWidgets.QAction(qtawesome.icon('fa.share'), '馈线柜')
         self.menubar = self.menuBar()
-        self.menu_F = self.menubar.addMenu('&文件')
+        self.menu_F = self.menubar.addMenu('文件')
         self.menu_F.addAction(self.action_open)
         self.menu_F.addAction(self.action_save)
-        self.menu_P = self.menubar.addMenu('&协议')
-        self.protocol_103 = self.menu_P.addMenu(qtawesome.icon('fa.file-word-o', color='black'), '&103协议')
+        self.menu_P = self.menubar.addMenu('协议')
+        self.protocol_103 = self.menu_P.addMenu(qtawesome.icon('fa.file-word-o', color='black'), '103协议')
         self.protocol_103.addAction(self.incoming_cabinet_201_202)
         self.protocol_103.addAction(self.feeder_cabinet_211_212_213_214_215_216)
         """状态栏"""
@@ -130,7 +151,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.pushButton_clear = Button('fa.undo')
         self.pushButton_clear.setObjectName('button_clear')
         self.pushButton_clear.setToolTip('清空')
-        self.display_source = QtWidgets.QTextEdit()
+        self.display_source = TextView()
         self.display_source.setToolTip('请在此处输入数据源')
         self.display_result = QtWidgets.QTextEdit()
         """给左窗口添加部件"""
