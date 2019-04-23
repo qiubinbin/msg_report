@@ -26,21 +26,26 @@ class Button(QtWidgets.QPushButton):
 class TextView(QtWidgets.QTextEdit):
     def __init__(self):
         super().__init__()
-        self.clipboard = QtWidgets.QApplication.clipboard()
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
         self.setContextMenuPolicy(
-            QtCore.Qt.CustomContextMenu)  # 将ContextMenuPolicy设置为Qt.CustomContextMenu,否则无法使用customContextMenuRequested信号
+            QtCore.Qt.CustomContextMenu)  # 将ContextMenuPolicy设置为Qt.CustomContextMenu
         self.customContextMenuRequested.connect(self.showmenu)
-        self.action_paste = QtWidgets.QAction(qtawesome.icon('fa.clipboard', color='black'), '粘贴')
-        self.action_paste.setShortcut('Ctrl+P')
-        self.menu = QtWidgets.QMenu()
-        self.menu.addAction(self.action_paste)
-        self.action_paste.triggered.connect(self.text)
 
     def showmenu(self):
-        self.menu.exec_(QtGui.QCursor.pos())
+        menu = QtWidgets.QMenu()
+        action_paste = QtWidgets.QAction(qtawesome.icon('fa.clipboard', color='black'), '粘贴')
+        action_paste.setShortcut('Ctrl+V')
+        menu.addAction(action_paste)
+        action_paste.triggered.connect(self.paste)
+        menu.exec_(QtGui.QCursor.pos())
 
-    def text(self):
-        self.setHtml(self.clipboard.text())
+
+class ComBox(QtWidgets.QComboBox):
+    def __int__(self):
+        super().__init__()
+        # self.
 
 
 class Msg_als(QtWidgets.QMainWindow):
@@ -50,7 +55,6 @@ class Msg_als(QtWidgets.QMainWindow):
         self.common_init()
         self.incoming_init()
         self.init_action_connect()
-        self.edit = False  # 编辑状态
 
     def init_action_connect(self):
         self.action_open.triggered.connect(self.open_file)
@@ -154,6 +158,12 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_source = TextView()
         self.display_source.setToolTip('请在此处输入数据源')
         self.display_result = QtWidgets.QTextEdit()
+        self.display_result.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)  # 关闭自带菜单
+        self.display_result.setReadOnly(True)
+        self.display_result.setToolTip('此处显示分析结果')
+        self.display_result.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.display_result.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.display_result.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
         """给左窗口添加部件"""
         self.left_layout.addWidget(self.begin_label, 0)
         self.left_layout.addWidget(self.comboBox_date1, 1)
@@ -225,9 +235,7 @@ class Msg_als(QtWidgets.QMainWindow):
             font-family:"等线"}
             QPushButton#left_button:hover{
             border-left:4px solid white;
-            font-weight:700}
-            QComboBox#left_combobox{color:#4B6EAF;}
-            ''')
+            font-weight:700}''')
         self.display_select.setStyleSheet('''
             QTextEdit{
             color:#000000;
@@ -267,8 +275,14 @@ class Msg_als(QtWidgets.QMainWindow):
             QPushButton#left_button:hover{
             border-left:4px solid red;
             font-weight:700}
-            QComboBox#left_combobox{color:#4B6EAF;}
-            ''')
+            QComboBox#left_combobox{border: 1px;
+            border-color: darkgray;
+            border-style: solid;}
+            QComboBox#left_combobox:down-arrow{image:url(icon/svgs/regular/arrow2.svg);}
+            QComboBox#left_combobox:drop-down{
+            border-left-width: 1px;
+            border-left-color: darkgray;
+            border-left-style: solid;}''')
         self.display_select.setStyleSheet('''
             QTextEdit{
             color:#000000;
@@ -460,11 +474,9 @@ class Msg_als(QtWidgets.QMainWindow):
         return src
 
     def open_edit(self):
-        if not self.edit:
+        if self.display_select.isReadOnly():
             self.display_select.setReadOnly(False)  # 打开编辑，方便做笔记
             self.statusbar.showMessage("已开启编辑")
-            self.edit = True
         else:
             self.display_select.setReadOnly(True)
             self.statusbar.showMessage("已关闭编辑", msecs=200)
-            self.edit = False
