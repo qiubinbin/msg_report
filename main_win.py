@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QFont
 import re, collections, qtawesome
 from feedback_win import FeedBack
+from IEC103 import analysis
 
 
 class Button(QtWidgets.QPushButton):
@@ -63,6 +64,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.comboBox_time1.currentIndexChanged.connect(self.change_datelist_2)
         self.comboBox_date2.currentIndexChanged.connect(self.change_timelist_2)
         self.pushButton_clear.clicked.connect(self.clear)
+        self.pushButton_execute.clicked.connect(self.execute)
 
     def common_init(self):
         """初始化UI"""
@@ -157,6 +159,10 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_result.setToolTip('此处显示分析结果')
         self.display_result.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.display_result.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
+        self.display_result.verticalScrollBar().setStyleSheet('''
+        QScrollBar:vertical{padding-top:17px;padding-bottom:17px;}
+        QScrollBar{background:#243040;color:#F49900;width:17px}
+        QScrollBar:add-page:vertical,QScrollBar:sub-page:vertical{background:#F1F1F1}''')
         """给左窗口添加部件"""
         self.left_layout.addWidget(self.begin_label, 0)
         self.left_layout.addWidget(self.comboBox_date1, 1)
@@ -228,7 +234,15 @@ class Msg_als(QtWidgets.QMainWindow):
             font-family:"等线"}
             QPushButton#left_button:hover{
             border-left:4px solid white;
-            font-weight:700}''')
+            font-weight:700}
+            QComboBox#left_combobox{border: 1px;
+            border-color: darkgray;
+            border-style: solid;}
+            QComboBox#left_combobox:down-arrow{image:url(icon/svgs/regular/arrow2.svg);}
+            QComboBox#left_combobox:drop-down{
+            border-left-width: 1px;
+            border-left-color: darkgray;
+            border-left-style: solid;}''')
         self.display_select.setStyleSheet('''
             QTextEdit{
             color:#000000;
@@ -473,3 +487,11 @@ class Msg_als(QtWidgets.QMainWindow):
         else:
             self.display_select.setReadOnly(True)  # 关闭编辑
             self.statusbar.showMessage("已关闭编辑", msecs=200)
+
+    def execute(self):
+        message = self.display_source.toPlainText().strip()
+        temp_result = analysis(message)
+        self.display_result.setHtml(temp_result[0])
+        for m in temp_result[1].keys():
+            self.display_result.append(
+                m + temp_result[1][m] + '<hr style=" height:2px;border:none;border-top:2px dotted #185598;" />')
