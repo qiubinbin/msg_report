@@ -42,12 +42,6 @@ class TextView(QtWidgets.QTextEdit):
         menu.exec_(QtGui.QCursor.pos())
 
 
-class ComBox(QtWidgets.QComboBox):
-    def __int__(self):
-        super().__init__()
-        # self.
-
-
 class Msg_als(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -162,7 +156,6 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_result.setReadOnly(True)
         self.display_result.setToolTip('此处显示分析结果')
         self.display_result.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.display_result.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.display_result.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
         """给左窗口添加部件"""
         self.left_layout.addWidget(self.begin_label, 0)
@@ -478,5 +471,5 @@ class Msg_als(QtWidgets.QMainWindow):
             self.display_select.setReadOnly(False)  # 打开编辑，方便做笔记
             self.statusbar.showMessage("已开启编辑")
         else:
-            self.display_select.setReadOnly(True)
+            self.display_select.setReadOnly(True)  # 关闭编辑
             self.statusbar.showMessage("已关闭编辑", msecs=200)
