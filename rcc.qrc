@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="png">
+    <file>images/search.png</file>
+    <file>images/20181020150157190.png</file>
+    <file>images/20181020150202709.png</file>
+  </qresource>
+</RCC>
