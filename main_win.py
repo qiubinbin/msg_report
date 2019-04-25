@@ -60,6 +60,8 @@ class Msg_als(QtWidgets.QMainWindow):
         self.common_init()
         self.incoming_init()
         self.init_action_connect()
+        self.setWindowIcon(QtGui.QIcon('icon/图标.svg'))
+        self.setWindowTitle('报文')
 
     def init_action_connect(self):
         self.action_open.triggered.connect(self.open_file)
@@ -259,7 +261,7 @@ class Msg_als(QtWidgets.QMainWindow):
             QComboBox#left_combobox{border: 1px;
             border-color: darkgray;
             border-style: solid;}
-            QComboBox#left_combobox::down-arrow{image:url(icon/svgs/arrow2_feeder.svg);}
+            QComboBox#left_combobox::down-arrow{image:url(icon/arrow2_feeder.svg);}
             QComboBox#left_combobox::drop-down{
             border-left-width: 1px;
             border-left-color: darkgray;
@@ -312,7 +314,7 @@ class Msg_als(QtWidgets.QMainWindow):
             border-radius: 1px;
             padding: 1px 18px 1px 3px;
             border-color: darkgray;}
-            QComboBox#left_combobox::down-arrow{image:url(icon/svgs/arrow2_incoming.svg);}
+            QComboBox#left_combobox::down-arrow{image:url(icon/arrow2_incoming.svg);}
             QComboBox#left_combobox::drop-down{
             subcontrol-origin: padding;
             subcontrol-position: top right;

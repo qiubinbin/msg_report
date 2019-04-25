@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 800 800" style="enable-background:new 0 0 800 800;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:url(#SVGID_1_);stroke:#000000;stroke-miterlimit:10;}
+	.st1{fill:#FFFFFF;}
+	.st2{font-family:'AdobeSongStd-Light-GBpc-EUC-H';}
+	.st3{font-size:262.3875px;}
+	.st4{fill:#A47F39;stroke:#000000;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st5{font-size:102.1609px;}
+	.st6{fill:none;}
+</style>
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="320.2258" y1="400.9355" x2="368.2518" y2="400.9355">
+	<stop  offset="0.2813" style="stop-color:#000000"/>
+	<stop  offset="1" style="stop-color:#000000"/>
+</linearGradient>
+<path class="st0" d="M799.98,800.94H0.02c-0.01,0-0.02-0.01-0.02-0.02V0.95c0-0.01,0.01-0.02,0.02-0.02h799.97
+	c0.01,0,0.02,0.01,0.02,0.02v799.97C800,800.93,799.99,800.94,799.98,800.94z"/>
+<text transform="matrix(0.857 0 0 1 167.1587 428.3545)" class="st1 st2 st3">报文</text>
+<g>
+	<text transform="matrix(0.8715 0 0 1 201.0955 602.9996)" class="st4 st2 st5">MESSAGE</text>
+</g>
+<rect x="976.74" y="735.97" class="st6" width="4.26" height="2.03"/>
+<rect x="950.42" y="520.74" class="st6" width="3.58" height="1.26"/>
+<rect x="198" y="558" class="st6" width="1.45" height="3"/>
+<rect x="-180" y="306" class="st6" width="3.97" height="1.06"/>
+</svg>
