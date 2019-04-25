@@ -69,17 +69,23 @@ class Msg_als(QtWidgets.QMainWindow):
     def common_init(self):
         """初始化UI"""
         """菜单栏"""
-        self.action_open = QtWidgets.QAction(qtawesome.icon('fa.folder-open', color="black"), '打开(O)')
+        self.action_open = QtWidgets.QAction(qtawesome.icon('fa.folder-open-o', color="black"), '打开(O)')
         self.action_open.setShortcut('Ctrl+O')
         self.action_save = QtWidgets.QAction(qtawesome.icon('fa.save', color="black"), '保存(S)')
         self.action_save.setShortcut('Ctrl+S')
+        self.action_open_remote = QtWidgets.QAction(qtawesome.icon('fa.skyatlas', color="black"), '远程')
+        self.action_open_remote.setShortcut('Ctrl+R')
+        self.action_about = QtWidgets.QAction('关于')
         self.incoming_cabinet_201_202 = QtWidgets.QAction(qtawesome.icon('fa.share'), '进线柜')
         self.feeder_cabinet_211_212_213_214_215_216 = QtWidgets.QAction(qtawesome.icon('fa.share'), '馈线柜')
         self.menubar = self.menuBar()
         self.menu_F = self.menubar.addMenu('文件')
         self.menu_F.addAction(self.action_open)
         self.menu_F.addAction(self.action_save)
+        self.menu_F.addAction(self.action_open_remote)
         self.menu_P = self.menubar.addMenu('协议')
+        self.menu_H = self.menubar.addMenu('帮助')
+        self.menu_H.addAction(self.action_about)
         self.protocol_103 = self.menu_P.addMenu(qtawesome.icon('fa.file-word-o', color='black'), '103协议')
         self.protocol_103.addAction(self.incoming_cabinet_201_202)
         self.protocol_103.addAction(self.feeder_cabinet_211_212_213_214_215_216)
@@ -160,9 +166,13 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_result.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.display_result.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
         self.display_result.verticalScrollBar().setStyleSheet('''
-        QScrollBar:vertical{padding-top:17px;padding-bottom:17px;}
-        QScrollBar{background:#243040;color:#F49900;width:17px}
-        QScrollBar:add-page:vertical,QScrollBar:sub-page:vertical{background:#F1F1F1}''')
+        QScrollBar:vertical{padding-top:18px;padding-bottom:18px;
+        background:#243040;color:#F49900;}
+        QScrollBar:handle:vertical{border:none}
+        QScrollBar:add-line:vertical{height:17px;color:#F49900;background:#243040;}
+        QScrollBar:sub-line:vertical{height:17px;color:#F49900;background:#243040;}
+        QScrollBar:add-page:vertical{background:#F0F0F0;}
+        QScrollBar:sub-page:vertical{background:#F0F0F0;}''')
         """给左窗口添加部件"""
         self.left_layout.addWidget(self.begin_label, 0)
         self.left_layout.addWidget(self.comboBox_date1, 1)
@@ -282,20 +292,20 @@ class Msg_als(QtWidgets.QMainWindow):
             QPushButton#left_button:hover{
             border-left:4px solid red;
             font-weight:700}
-            QComboBox#left_combobox{border: 1px;
-            border-color: darkgray;
-            border-style: solid;}
-            QComboBox#left_combobox:down-arrow{image:url(icon/svgs/regular/arrow2.svg);}
-            QComboBox#left_combobox:drop-down{
+            QCombobox#left_combobox:drop-down{
+            subcontrol-origin:padding;  
+            subcontrol-position: top right;
+            width: 15px;
             border-left-width: 1px;
             border-left-color: darkgray;
-            border-left-style: solid;}''')
-        self.display_select.setStyleSheet('''
-            QTextEdit{
-            color:#000000;
-            background-color:#F5F5F5;
-            border:1px solid gray;
-            width:300px;}''')
+            border-left-style: solid; 
+            border-top-right-radius: 3px; 
+            border-bottom-right-radius: 3px;}}
+            QCombobox#left_combobox:down-arrow {image: url(icon/svgs/regular/arrow2.svg)};
+            QCombobox#left_combobox:QAbstractItemView {
+            border: 2px solid darkgray;
+            selection-background-color: lightgray;
+            selection-color:rgb(255, 0, 0); }''')
         self.menubar.setStyleSheet('''
             menu_F:hover{
             background-color:#4B6EAF;}''')
@@ -385,8 +395,8 @@ class Msg_als(QtWidgets.QMainWindow):
             pass
 
     def search(self):
+        """按时间段进行搜索"""
         self.display_select.clear()
-        # 按时间段进行搜索显示
         try:
             for i in range(list(dates_list.keys()).index(self.comboBox_date1.currentText()),
                            list(dates_list.keys()).index(self.comboBox_date2.currentText()) + 1):
@@ -423,30 +433,43 @@ class Msg_als(QtWidgets.QMainWindow):
         content_msg = re.search(pattern_date, file_opened)
         src = content_msg['content'].strip()
         # 在时间段中查找216记录
-        pattern_linematch_send1 = re.compile(
-            r'(?P<content_216>TX-.+?F0 A0 (?P<value>0[12]).+?)')
-        pattern_linematch_send2 = re.compile(r'^\s')
-        pattern_linematch_receive1 = re.compile(
-            r'(?P<content_216>RX-.+?F0 A0 (?P<value>0[12]).+?)')
-        pattern_linematch_receive2 = re.compile(r'^\s')
         search_result = []
-        pre_signal = False
-        rev_signal = False
+        pre_signal1 = False
+        pre_signal2 = False
+        rev_signal1 = False
+        rev_signal2 = False
+        temp_message = []  # 临时保存一级召唤数据
         for line in src.split('\n'):
-            if re.match(pattern_linematch_send1, line):
-                pre_signal = True
+            # 匹配TX(F0 A0)-RX对
+            if re.match(re.compile(r'TX-.+?F0 A0 .+?'), line):
+                pre_signal1 = True
                 search_result.append(line)
-            elif pre_signal & bool(re.match(pattern_linematch_send2, line)):
+            elif pre_signal1 & bool(re.match(re.compile(r'^\s'), line)):
                 search_result.append(line)
-            elif pre_signal & (not bool(re.match(pattern_linematch_send2, line))):
-                pre_signal = False
-            elif re.match(pattern_linematch_receive1, line):
-                rev_signal = True
+            elif pre_signal1 & bool(re.match(re.compile(r'^RX'), line)):
                 search_result.append(line)
-            elif rev_signal & bool(re.match(pattern_linematch_receive2, line)):
-                search_result.append(line)
-            elif rev_signal & (not bool(re.match(pattern_linematch_receive2, line))):
-                rev_signal = False
+                pre_signal1 = False
+                rev_signal1 = True
+            elif rev_signal1:
+                if re.match(re.compile(r'^\s'), line):
+                    search_result.append(line)
+                rev_signal1 = False
+            # 匹配一级数据召唤
+            elif re.match(re.compile(r'^TX-.+?10 \dA.+?16$'), line):
+                temp_message.append(line)
+                pre_signal2 = True
+            elif pre_signal2:
+                if re.match(re.compile(r'^RX-.+?F0 A0 .+?'), line):
+                    temp_message.append(line)
+                    rev_signal2 = True
+                else:
+                    temp_message = []  # 匹配失败，清空
+                pre_signal2 = False
+            elif rev_signal2:
+                if re.match(re.compile(r'^\s'), line):
+                    temp_message.append(line)
+                search_result += temp_message
+                rev_signal2 = False
         self.display_select.setHtml(self.createhtml(search_result, date, time))
         QtWidgets.QApplication.processEvents()
         file_temp.close()
