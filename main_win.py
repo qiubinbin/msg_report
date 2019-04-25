@@ -16,7 +16,7 @@ class Button(QtWidgets.QPushButton):
     def enterEvent(self, a0: QtCore.QEvent):
         """复写鼠标进入事件"""
         if self.enterEvent:
-            self.setIcon(qtawesome.icon(self.btn_icon, color='red'))
+            self.setIcon(qtawesome.icon(self.btn_icon, color='#e2598b'))
 
     def leaveEvent(self, a0: QtCore.QEvent):
         """复写鼠标离开事件"""
@@ -37,9 +37,19 @@ class TextView(QtWidgets.QTextEdit):
     def showmenu(self):
         menu = QtWidgets.QMenu()
         action_paste = QtWidgets.QAction(qtawesome.icon('fa.clipboard', color='black'), '粘贴')
+        action_clear = QtWidgets.QAction(qtawesome.icon('fa.trash', color='black'), '清空')
         action_paste.setShortcut('Ctrl+V')
-        menu.addAction(action_paste)
-        action_paste.triggered.connect(self.paste)
+        menu.setStyleSheet('''QMenu{border:none;background:none;color:black;}
+        QMenu:item:selected:enabled{background:#E8EAED}
+        QMenu::item:selected:!enabled{background:transparent;}
+        QMenu::separator{width:1px;}''')
+        if not self.isReadOnly():
+            menu.addAction(action_paste)
+            menu.addAction(action_clear)
+            action_clear.triggered.connect(self.clear)
+            action_paste.triggered.connect(self.paste)
+        else:
+            pass
         menu.exec_(QtGui.QCursor.pos())
 
 
@@ -122,13 +132,13 @@ class Msg_als(QtWidgets.QMainWindow):
         self.pushButton_note.setObjectName('left_button')
         self.pushButton_save = QtWidgets.QPushButton(qtawesome.icon('fa.save', color='white'), "保存")
         self.pushButton_save.setObjectName('left_button')
-        self.pushButton_feedback = QtWidgets.QPushButton(qtawesome.icon('fa.telegram', color='white'), "反馈")
+        self.pushButton_feedback = QtWidgets.QPushButton(qtawesome.icon('fa.comments', color='white'), "反馈")
         self.pushButton_feedback.setObjectName('left_button')
         self.begin_label = QtWidgets.QPushButton('开始时间')
         self.begin_label.setObjectName('left_label')
         self.end_label = QtWidgets.QPushButton('结束时间')
         self.end_label.setObjectName('left_label')
-        self.display_select = QtWidgets.QTextEdit()
+        self.display_select = TextView()
         self.display_select.setFont(QFont("Consolas", 8))
         self.display_select.setReadOnly(True)
         self.comboBox_date1 = QtWidgets.QComboBox()
@@ -159,7 +169,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.pushButton_clear.setToolTip('清空')
         self.display_source = TextView()
         self.display_source.setToolTip('请在此处输入数据源')
-        self.display_result = QtWidgets.QTextEdit()
+        self.display_result = TextView()
         self.display_result.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)  # 关闭自带菜单
         self.display_result.setReadOnly(True)
         self.display_result.setToolTip('此处显示分析结果')
@@ -212,7 +222,8 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_source.setContentsMargins(0, 0, 0, 0)
         icon = qtawesome.icon('fa.download', color='red')
         self.transform_widget.setStyleSheet('''
-        QFrame#title{background-color: #242F3F;border-bottom:1px solid #305f72}
+        QFrame#title{background-color: #242F3F;border-bottom:1px solid #305f72;
+        border-top-left-radius:1px;border-top-right-radius:1px;}
         QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
 
     def incoming_init(self):
@@ -227,10 +238,10 @@ class Msg_als(QtWidgets.QMainWindow):
         self.left_widget.setStyleSheet('''
             QFrame#left_widget{
             background-color:qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0 rgba(132, 77, 181, 255), stop:1 rgba(102, 130, 237, 255));
-            border-top-left-radius:10px;
-            border-top-right-radius:10px;
-            border-bottom-left-radius:10px;
-            border-bottom-right-radius:10px;
+            border-top-left-radius:4px;
+            border-top-right-radius:4px;
+            border-bottom-left-radius:4px;
+            border-bottom-right-radius:4px;
             }
             QPushButton{
             border:none;
@@ -248,11 +259,15 @@ class Msg_als(QtWidgets.QMainWindow):
             QComboBox#left_combobox{border: 1px;
             border-color: darkgray;
             border-style: solid;}
-            QComboBox#left_combobox:down-arrow{image:url(icon/svgs/regular/arrow2.svg);}
-            QComboBox#left_combobox:drop-down{
+            QComboBox#left_combobox::down-arrow{image:url(icon/svgs/arrow2_feeder.svg);}
+            QComboBox#left_combobox::drop-down{
             border-left-width: 1px;
             border-left-color: darkgray;
             border-left-style: solid;}''')
+        self.transform_widget.setStyleSheet('''
+            QFrame#title{background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0 rgba(132, 77, 181, 255), stop:1 rgba(102, 130, 237, 255));border-bottom:1px solid #ff8b6a;
+            border-top-left-radius:1px;border-top-right-radius:1px;}
+            QPushButton{border:none;background-color:none;color:white;font:75 10pt "微软雅黑";}''')
         self.display_select.setStyleSheet('''
             QTextEdit{
             color:#000000;
@@ -274,10 +289,10 @@ class Msg_als(QtWidgets.QMainWindow):
         self.left_widget.setStyleSheet('''
             QFrame#left_widget{
             background-color:#232F3F;
-            border-top-left-radius:10px;
-            border-top-right-radius:10px;
-            border-bottom-left-radius:10px;
-            border-bottom-right-radius:10px;
+            border-top-left-radius:4px;
+            border-top-right-radius:4px;
+            border-bottom-left-radius:4px;
+            border-bottom-right-radius:4px;
             }
             QPushButton{
             border:none;
@@ -290,22 +305,22 @@ class Msg_als(QtWidgets.QMainWindow):
             font-weight:700;
             font-family:"等线"}
             QPushButton#left_button:hover{
-            border-left:4px solid red;
+            border-left:4px solid #e2598b;
             font-weight:700}
-            QCombobox#left_combobox:drop-down{
-            subcontrol-origin:padding;  
+            QComboBox#left_combobox{
+            border: 1px solid gray;
+            border-radius: 1px;
+            padding: 1px 18px 1px 3px;
+            border-color: darkgray;}
+            QComboBox#left_combobox::down-arrow{image:url(icon/svgs/arrow2_incoming.svg);}
+            QComboBox#left_combobox::drop-down{
+            subcontrol-origin: padding;
             subcontrol-position: top right;
             width: 15px;
             border-left-width: 1px;
             border-left-color: darkgray;
-            border-left-style: solid; 
-            border-top-right-radius: 3px; 
-            border-bottom-right-radius: 3px;}}
-            QCombobox#left_combobox:down-arrow {image: url(icon/svgs/regular/arrow2.svg)};
-            QCombobox#left_combobox:QAbstractItemView {#todo
-            border: 2px solid darkgray;
-            selection-background-color: lightgray;
-            selection-color:rgb(255, 0, 0); }''')
+            border-top-right-radius: 1px;
+            border-bottom-right-radius: 1px;}''')
         self.menubar.setStyleSheet('''
             menu_F:hover{
             background-color:#4B6EAF;}''')
