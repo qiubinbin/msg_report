@@ -302,7 +302,7 @@ class Msg_als(QtWidgets.QMainWindow):
             border-top-right-radius: 3px; 
             border-bottom-right-radius: 3px;}}
             QCombobox#left_combobox:down-arrow {image: url(icon/svgs/regular/arrow2.svg)};
-            QCombobox#left_combobox:QAbstractItemView {
+            QCombobox#left_combobox:QAbstractItemView {#todo
             border: 2px solid darkgray;
             selection-background-color: lightgray;
             selection-color:rgb(255, 0, 0); }''')
