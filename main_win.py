@@ -79,7 +79,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.pushButton_execute.clicked.connect(self.execute)
 
     def common_init(self):
-        """初始化UI"""
+        """初始化UI """
         """菜单栏"""
         self.action_open = QtWidgets.QAction(qtawesome.icon('fa.folder-open-o', color="black"), '打开(O)')
         self.action_open.setShortcut('Ctrl+O')
