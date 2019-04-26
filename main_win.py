@@ -3,54 +3,7 @@ from PyQt5.QtGui import QFont
 import re, collections, qtawesome
 from feedback_win import FeedBack
 from IEC103 import analysis
-
-
-class Button(QtWidgets.QPushButton):
-    """复写QPushButton"""
-
-    def __init__(self, icon: str):
-        super().__init__()
-        self.btn_icon = icon
-        self.setIcon(qtawesome.icon(self.btn_icon, color='white'))  # 初始图标颜色
-
-    def enterEvent(self, a0: QtCore.QEvent):
-        """复写鼠标进入事件"""
-        if self.enterEvent:
-            self.setIcon(qtawesome.icon(self.btn_icon, color='#e2598b'))
-
-    def leaveEvent(self, a0: QtCore.QEvent):
-        """复写鼠标离开事件"""
-        if self.leaveEvent:
-            self.setIcon(qtawesome.icon(self.btn_icon, color='white'))
-
-
-class TextView(QtWidgets.QTextEdit):
-    def __init__(self):
-        super().__init__()
-        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
-        self.setContextMenuPolicy(
-            QtCore.Qt.CustomContextMenu)  # 将ContextMenuPolicy设置为Qt.CustomContextMenu
-        self.customContextMenuRequested.connect(self.showmenu)
-
-    def showmenu(self):
-        menu = QtWidgets.QMenu()
-        action_paste = QtWidgets.QAction(qtawesome.icon('fa.clipboard', color='black'), '粘贴')
-        action_clear = QtWidgets.QAction(qtawesome.icon('fa.trash', color='black'), '清空')
-        action_paste.setShortcut('Ctrl+V')
-        menu.setStyleSheet('''QMenu{border:none;background:none;color:black;}
-        QMenu:item:selected:enabled{background:#E8EAED}
-        QMenu::item:selected:!enabled{background:transparent;}
-        QMenu::separator{width:1px;}''')
-        if not self.isReadOnly():
-            menu.addAction(action_paste)
-            menu.addAction(action_clear)
-            action_clear.triggered.connect(self.clear)
-            action_paste.triggered.connect(self.paste)
-        else:
-            pass
-        menu.exec_(QtGui.QCursor.pos())
+from override import TextView, Button4Icon
 
 
 class Msg_als(QtWidgets.QMainWindow):
@@ -163,10 +116,10 @@ class Msg_als(QtWidgets.QMainWindow):
         self.label_source.setObjectName('label')
         self.label_protocol = QtWidgets.QPushButton('103规约')
         self.label_protocol.setObjectName('label')
-        self.pushButton_execute = Button('fa.download')
+        self.pushButton_execute = Button4Icon('fa.download')
         self.pushButton_execute.setObjectName('button_execute')
         self.pushButton_execute.setToolTip('分析')
-        self.pushButton_clear = Button('fa.undo')
+        self.pushButton_clear = Button4Icon('fa.undo')
         self.pushButton_clear.setObjectName('button_clear')
         self.pushButton_clear.setToolTip('清空')
         self.display_source = TextView()
@@ -177,14 +130,6 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_result.setToolTip('此处显示分析结果')
         self.display_result.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.display_result.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
-        self.display_result.verticalScrollBar().setStyleSheet('''
-        QScrollBar:vertical{padding-top:18px;padding-bottom:18px;
-        background:#243040;color:#F49900;}
-        QScrollBar:handle:vertical{border:none}
-        QScrollBar:add-line:vertical{height:17px;color:#F49900;background:#243040;}
-        QScrollBar:sub-line:vertical{height:17px;color:#F49900;background:#243040;}
-        QScrollBar:add-page:vertical{background:#F0F0F0;}
-        QScrollBar:sub-page:vertical{background:#F0F0F0;}''')
         """给左窗口添加部件"""
         self.left_layout.addWidget(self.begin_label, 0)
         self.left_layout.addWidget(self.comboBox_date1, 1)
