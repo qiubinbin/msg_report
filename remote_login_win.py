@@ -42,7 +42,7 @@ class Login(QtWidgets.QFrame):
         self.combobox_protocol.addItem('FTP')
         self.combobox_protocol.addItem('SCP')
         self.linedit_host = LineEdit()
-        self.linedit_host.setValidator(QtGui.QRegExpValidator(QRegExp(r'^[0-9]{2,3}\.[0-9]{2,3}\.[0-9]{2,3}\.[0-9]{2,3}')))
+        self.linedit_host.setValidator(QtGui.QRegExpValidator(QRegExp(r'^[0-9]{2,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')))
         self.linedit_username = LineEdit()
         self.linedit_username.setValidator(QtGui.QRegExpValidator(QRegExp(r'^[a-zA-Z0-9_-]{3,16}')))
         self.linedit_password = LineEdit()
