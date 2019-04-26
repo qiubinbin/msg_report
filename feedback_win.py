@@ -1,9 +1,11 @@
+import qtawesome
+import time
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
-import qtawesome, time
-from button_beautify import AnimationShadowEffect
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+
+from button_beautify import AnimationShadowEffect
 from override import TextView
 
 

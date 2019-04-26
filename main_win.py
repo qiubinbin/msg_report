@@ -1,8 +1,12 @@
+import collections
+import qtawesome
+import re
+
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QFont
-import re, collections, qtawesome
-from feedback_win import FeedBack
+
 from IEC103 import analysis
+from feedback_win import FeedBack
 from override import TextView, Button4Icon
 
 

@@ -1,6 +1,6 @@
 """"复写以适应需求"""
-from PyQt5 import QtWidgets, QtCore, QtGui
 import qtawesome
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 class Button4Icon(QtWidgets.QPushButton):

@@ -1,7 +1,8 @@
-from PyQt5 import QtWidgets,QtGui
-from PyQt5.QtGui import QColor
-from PyQt5.QtCore import QRegExp
 import qtawesome
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QColor
+
 from button_beautify import AnimationShadowEffect
 from override import LineEdit
 
