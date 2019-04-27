@@ -5,7 +5,7 @@ from PyQt5.QtGui import QColor
 
 from button_beautify import AnimationShadowEffect
 from override import LineEdit
-
+import paramiko
 
 class Login(QtWidgets.QFrame):
     def __init__(self):
@@ -35,13 +35,13 @@ class Login(QtWidgets.QFrame):
         self.pushbutton_login.setGraphicsEffect(self.pushbutton_login_animation)
         self.pushbutton_login_animation.start()
         self.pushbutton_login.setObjectName('button1')
+        self.pushbutton_login.clicked.connect(self.login)
         self.pushbutton_close = QtWidgets.QPushButton('关闭')
         self.pushbutton_close.clicked.connect(self.close)
         self.pushbutton_close.setObjectName('button2')
         self.combobox_protocol = QtWidgets.QComboBox()
         self.combobox_protocol.addItem('SFTP')
         self.combobox_protocol.addItem('FTP')
-        self.combobox_protocol.addItem('SCP')
         self.linedit_host = LineEdit()
         self.linedit_host.setValidator(QtGui.QRegExpValidator(QRegExp(r'^[0-9]{2,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')))
         self.linedit_username = LineEdit()
@@ -73,6 +73,9 @@ class Login(QtWidgets.QFrame):
             font-weight:bold;color:#60607A;font-family:"Source Han Sans"}
         QPushButton#button2:hover{background:#EFEFEF;border:1px solid #E6E6ED;padding:1px}
         QPushButton#label{border:none;background:none;font-family:"Source Han Sans";font-size:11pd;font-weight:487;text-align:left}''')
+
+    def login(self):
+        """连接到服务器"""
 
 
 if __name__ == '__main__':
