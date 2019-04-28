@@ -522,3 +522,5 @@ class Msg_als(QtWidgets.QMainWindow):
 
     def remote(self):
         self.login.show()
+        # TODO
+        # 远程登录程序
