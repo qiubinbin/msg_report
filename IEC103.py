@@ -84,24 +84,32 @@ def asdu_analysis(asdu_message: str, control_message: str):
     content_asdu = ''
     asdu = re.sub(re.compile(r'\s'), '', asdu_message)
     asdu_type = asdu[0:2]
-    content_asdu += '<br>' + asdu_type + '&nbsp;&nbsp;&nbsp;ASDU类型标识:' + str(int(asdu_type, 16)) + '<br>'
+    content_asdu += '<br>' + asdu_type + '&nbsp;&nbsp;ASDU类型标识:' + str(int(asdu_type, 16)) + '<br>'
     asdu_vsq = str('{:08b}'.format(int(asdu[2:4], 16)))
     if int(asdu_vsq[0]):
         content_asdu += asdu[
-                        2:4] + '&nbsp;&nbsp;&nbsp;可变结构限定词:<br>&nbsp;&nbsp;&nbsp;SQ=1 顺序(如:首地址,数据1,数据2···)<br>&nbsp;&nbsp;&nbsp;信息数目:' + str(
+                        2:4] + '&nbsp;&nbsp;可变结构限定词:<br>&nbsp;&nbsp;&nbsp;SQ=1 顺序(如:首地址,数据1,数据2···)<br>&nbsp;&nbsp;&nbsp;信息数目:' + str(
             int(asdu_vsq[1:], 2)) + '<br>'
     else:
         content_asdu += asdu[
-                        2:4] + '&nbsp;&nbsp;&nbsp;可变结构限定词:<br>&nbsp;&nbsp;&nbsp;SQ=0 非顺序(如:地址1,数据1,地址2···)<br>&nbsp;&nbsp;&nbsp;信息数目:' + str(
+                        2:4] + '&nbsp;&nbsp;可变结构限定词:<br>&nbsp;&nbsp;&nbsp;SQ=0 非顺序(如:地址1,数据1,地址2···)<br>&nbsp;&nbsp;&nbsp;信息数目:' + str(
             int(asdu_vsq[1:], 2)) + '<br>'
     if transform_direction:
-        content_asdu += asdu[4:6] + '&nbsp;&nbsp;&nbsp;传送原因:' + master2slave_transform[int(asdu[4:6], 16)] + '<br>'
+        content_asdu += asdu[4:6] + '&nbsp;&nbsp;传送原因:' + master2slave_transform[int(asdu[4:6], 16)] + '<br>'
     else:
-        content_asdu += asdu[4:6] + '&nbsp;&nbsp;&nbsp;传送原因:' + slave2master_transform[int(asdu[4:6], 16)] + '<br>'
-    content_asdu += asdu[6:8] + '&nbsp;&nbsp;&nbsp;应用服务数据单元公共地址:' + str(int(asdu[6:8], 16)) + '<br>'
-    content_asdu += asdu[8:10] + '&nbsp;&nbsp;&nbsp;功能类型:' + str(int(asdu[8:10], 16)) + '<br>'
-    content_asdu += asdu[10:12] + '&nbsp;&nbsp;&nbsp;信息序号:' + str(int(asdu[10:12], 16)) + '<br>'
-    content_asdu += '信息内容:' + asdu[12:]
+        content_asdu += asdu[4:6] + '&nbsp;&nbsp;传送原因:' + slave2master_transform[int(asdu[4:6], 16)] + '<br>'
+    content_asdu += asdu[6:8] + '&nbsp;&nbsp;应用服务数据单元公共地址:' + str(int(asdu[6:8], 16)) + '<br>'
+    content_asdu += asdu[8:10] + '&nbsp;&nbsp;功能类型:' + str(int(asdu[8:10], 16)) + '<br>'
+    content_asdu += asdu[10:12] + '&nbsp;&nbsp;信息序号:' + str(int(asdu[10:12], 16)) + '<br>'
+    if (asdu[8:10] == 'F0') & (asdu[10:12] == 'A0') & (asdu[12:14] == '02'):
+        content_asdu += asdu[12:] + '&nbsp;断路器合闸控制'
+    elif (asdu[8:10] == 'F0') & (asdu[10:12] == 'A0') & (asdu[12:14] == '01'):
+        content_asdu += asdu[12:] + '&nbsp;断路器分闸控制'
+    else:
+        content_asdu += asdu[12:] + '&nbsp;&nbsp;信息内容:?'
+    # TODO
+    # 带时标的未完成
+
     return content_asdu
 
 
@@ -110,27 +118,31 @@ def analysis(message: str):
     dict_message = collections.OrderedDict()
     message_type = ''
     if re.match(re.compile(r'^10'), message):
-        message_type += '☀☀☀☀☀☀☀☀☀☀固定帧长报文☀☀☀☀☀☀☀☀☀☀'
+        message_type += '&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;' \
+                        '固定帧长报文' \
+                        '&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;<hr>'
         result = re.match(pattern_fixed, message)
         dict_message[result['head']] = '&nbsp;&nbsp;&nbsp;启动字符'
-        dict_message[result['code']] = '&nbsp;&nbsp;&nbsp;控制域<br>' + control_analysis(
+        dict_message[result['code']] = '&nbsp;&nbsp;控制域<br>' + control_analysis(
             result['code'])
-        dict_message[result['addr']] = '&nbsp;&nbsp;&nbsp;地址域'
-        dict_message[result['cs']] = '&nbsp;&nbsp;&nbsp;代码和'
-        dict_message[result['end']] = '&nbsp;&nbsp;&nbsp;结束字符'
+        dict_message[result['addr']] = '&nbsp;&nbsp;地址域'
+        dict_message[result['cs']] = '&nbsp;&nbsp;代码和'
+        dict_message[result['end']] = '&nbsp;&nbsp;结束字符'
 
     elif re.match(re.compile(r'^68'), message):
-        message_type += '☀☀☀☀☀☀☀☀☀☀可变帧长报文☀☀☀☀☀☀☀☀☀☀'
+        message_type += '&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;' \
+                        '可变帧长报文' \
+                        '&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;<hr>'
         result = re.match(pattern_variable, message)
         dict_message[result[
             'head']] = '&nbsp;&nbsp;&nbsp;启动帧<br>&nbsp;&nbsp;&nbsp;' + '启动字符:68<br>&nbsp;&nbsp;&nbsp;' + '长度:' + str(
             int(result['length'], 16))
-        dict_message[result['code']] = '&nbsp;&nbsp;&nbsp;控制域<br>' + control_analysis(result['code'])
-        dict_message[result['addr']] = '&nbsp;&nbsp;&nbsp;地址域'
+        dict_message[result['code']] = '&nbsp;&nbsp;控制域<br>' + control_analysis(result['code'])
+        dict_message[result['addr']] = '&nbsp;&nbsp;地址域'
         dict_message[re.sub(re.compile(r'\s'), ' ', result['asdu']).strip()] = '  链路用户数据' + asdu_analysis(
             result['asdu'], result['code'])
-        dict_message[result['cs']] = '&nbsp;&nbsp;&nbsp;代码和'
-        dict_message[result['end']] = '&nbsp;&nbsp;&nbsp;结束字符'
+        dict_message[result['cs']] = '&nbsp;&nbsp;代码和'
+        dict_message[result['end']] = '&nbsp;&nbsp;结束字符'
     return message_type, dict_message
 
 

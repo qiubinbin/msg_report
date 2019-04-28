@@ -15,7 +15,7 @@ class Msg_als(QtWidgets.QMainWindow):
         super().__init__()
         self.feedwin = FeedBack()
         self.common_init()
-        self.incoming_init()
+        self.feeder_init()
         self.init_action_connect()
         self.setWindowIcon(QtGui.QIcon('icon/图标.svg'))
         self.setWindowTitle('报文')
@@ -62,6 +62,9 @@ class Msg_als(QtWidgets.QMainWindow):
         self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.setEnabled(True)
         self.statusbar.setObjectName("statusbar")
+        self.statusbar_label = QtWidgets.QLabel()
+        self.statusbar_label.setText('当前模式:馈线柜')
+        self.statusbar.addPermanentWidget(self.statusbar_label)
         self.setStatusBar(self.statusbar)
         """主窗口"""
         self.setWindowTitle('报文分析')
@@ -177,12 +180,14 @@ class Msg_als(QtWidgets.QMainWindow):
         border-top-left-radius:1px;border-top-right-radius:1px;}
         QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
 
-    def incoming_init(self):
-        self.statusbar.showMessage('请打开进线柜日志文件')
+    def feeder_init(self):
+        self.statusbar_label.setText('当前模式:馈线柜')
+        self.statusbar.showMessage('请打开馈线柜日志文件')
         self.style_incoming()
 
-    def feeder_init(self):
-        self.statusbar.showMessage('请打开馈线柜日志文件')
+    def incoming_init(self):
+        self.statusbar_label.setText('当前模式:进线柜')
+        self.statusbar.showMessage('请打开进线柜日志文件')
         """样式表"""
         self.setWindowOpacity(0.99)  # 窗口透明度
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # 设置窗口背景透明
@@ -491,4 +496,4 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_result.setHtml(temp_result[0])
         for m in temp_result[1].keys():
             self.display_result.append(
-                m + temp_result[1][m] + '<hr style=" height:2px;border:none;border-top:2px dotted #185598;" />')
+                m + temp_result[1][m] + '<hr style=" height:2px;border:none;border-top:2px dotted #008080;" />')
