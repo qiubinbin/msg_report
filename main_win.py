@@ -1,7 +1,7 @@
 import collections
-import qtawesome
 import re
 
+import qtawesome
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QFont
 
