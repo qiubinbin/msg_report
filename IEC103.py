@@ -4,7 +4,7 @@ import re
 
 slave2master_function = {0: '确认', 1: '链路忙，未收到报文', 8: '以数据包响应请求帧', 9: '从站没有所召唤的数据', 11: '从站以链路状态响应主站请求'}
 master2slave_funtion = {0: '复位通信单元', 3: '传送数据', 4: '传送数据', 7: '传送数据', 9: '召唤链路状态', 10: '召唤1级数据', 11: '召唤2级数据'}
-master2slave_transform = {8: '时间同步', 9: '总召启动', 20: '一般命令', 31: '扰动数据的传输', 40: '通用分类写命令', 42: '通用分类读命令'}
+master2slave_transform = {8: '时间同步', 9: '总召启动', 12: '未知传送原因', 20: '一般命令', 31: '扰动数据的传输', 40: '通用分类写命令', 42: '通用分类读命令'}
 slave2master_transform = {1: '突发报文', 2: '循环传送', 3: '复位帧计算', 4: '复位通信单元',
                           5: '启动', 6: '电源合上', 7: '测试模式', 8: '时间同步', 9: '总召唤', 10: '总召唤终止',
                           11: '当地操作', 12: '远方操作', 20: '命令的肯定认可', 21: '命令的否定认可',
@@ -20,7 +20,7 @@ pattern_fixed = re.compile(
 def control_analysis(control_message: str):
     """解析控制域"""
     content = ''
-    temp = str('{:08b}'.format(int(control_message, 16)))
+    temp = '{:08b}'.format(int(control_message, 16))
     if int(temp[1]):
         content += '&nbsp;&nbsp;&nbsp;启动报文位(PRM）:1 ' + '主站 → 从站<br>'
         if temp[2]:
@@ -49,17 +49,19 @@ def control_analysis(control_message: str):
 
 
 def asdu_analysis(asdu_message: str, control_message: str):
-    transform_direction = int(bin(int(control_message, 16))[2:][1])
+    transform_direction = int('{:08b}'.format(int(control_message, 16))[1])
     content_asdu = ''
     asdu = re.sub(re.compile(r'\s'), '', asdu_message)
     asdu_type = asdu[0:2]
     content_asdu += '<br>' + asdu_type + '&nbsp;&nbsp;&nbsp;ASDU类型标识:' + str(int(asdu_type, 16)) + '<br>'
     asdu_vsq = str('{:08b}'.format(int(asdu[2:4], 16)))
     if int(asdu_vsq[0]):
-        content_asdu += asdu[2:4] + '&nbsp;&nbsp;&nbsp;可变结构限定词:<br>&nbsp;&nbsp;&nbsp;SQ=1 顺序(如:首地址,数据1,数据2···)<br>&nbsp;&nbsp;&nbsp;信息数目:' + str(
+        content_asdu += asdu[
+                        2:4] + '&nbsp;&nbsp;&nbsp;可变结构限定词:<br>&nbsp;&nbsp;&nbsp;SQ=1 顺序(如:首地址,数据1,数据2···)<br>&nbsp;&nbsp;&nbsp;信息数目:' + str(
             int(asdu_vsq[1:], 2)) + '<br>'
     else:
-        content_asdu += asdu[2:4] + '&nbsp;&nbsp;&nbsp;可变结构限定词:<br>&nbsp;&nbsp;&nbsp;SQ=0 非顺序(如:地址1,数据1,地址2···)<br>&nbsp;&nbsp;&nbsp;信息数目:' + str(
+        content_asdu += asdu[
+                        2:4] + '&nbsp;&nbsp;&nbsp;可变结构限定词:<br>&nbsp;&nbsp;&nbsp;SQ=0 非顺序(如:地址1,数据1,地址2···)<br>&nbsp;&nbsp;&nbsp;信息数目:' + str(
             int(asdu_vsq[1:], 2)) + '<br>'
     if transform_direction:
         content_asdu += asdu[4:6] + '&nbsp;&nbsp;&nbsp;传送原因:' + master2slave_transform[int(asdu[4:6], 16)] + '<br>'
@@ -89,7 +91,9 @@ def analysis(message: str):
     elif re.match(re.compile(r'^68'), message):
         message_type += '☀☀☀☀☀☀☀☀☀☀可变帧长报文☀☀☀☀☀☀☀☀☀☀'
         result = re.match(pattern_variable, message)
-        dict_message[result['head']] = '&nbsp;&nbsp;&nbsp;启动帧<br>&nbsp;&nbsp;&nbsp;' + '启动字符:68<br>&nbsp;&nbsp;&nbsp;' + '长度:' + str(int(result['length'], 16))
+        dict_message[result[
+            'head']] = '&nbsp;&nbsp;&nbsp;启动帧<br>&nbsp;&nbsp;&nbsp;' + '启动字符:68<br>&nbsp;&nbsp;&nbsp;' + '长度:' + str(
+            int(result['length'], 16))
         dict_message[result['code']] = '&nbsp;&nbsp;&nbsp;控制域<br>' + control_analysis(result['code'])
         dict_message[result['addr']] = '&nbsp;&nbsp;&nbsp;地址域'
         dict_message[re.sub(re.compile(r'\s'), ' ', result['asdu']).strip()] = '  链路用户数据' + asdu_analysis(

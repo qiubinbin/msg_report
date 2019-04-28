@@ -296,6 +296,14 @@ class Msg_als(QtWidgets.QMainWindow):
 
     def open_file(self):
         """文件打开显示并生成日期目录 """
+        """重新打开文件重置窗口"""
+        self.display_source.clear()
+        self.display_result.clear()
+        self.display_select.clear()
+        self.comboBox_date1.clear()
+        self.comboBox_time1.clear()
+        self.comboBox_date2.clear()
+        self.comboBox_time2.clear()
         global dates_list
         dates_list = collections.OrderedDict()
         global file

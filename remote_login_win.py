@@ -13,7 +13,7 @@ class Login(QtWidgets.QFrame):
         self.initui()
         self.setWindowTitle('登录')
         self.setWindowIcon(qtawesome.icon('fa.sign-in'))
-        self.setWindowOpacity(0.95)  # 窗口透明度
+        # self.setWindowOpacity(0.95)  # 窗口透明度
         self.setFixedSize(294, 241)
 
     def initui(self):
