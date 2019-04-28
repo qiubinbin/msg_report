@@ -8,14 +8,16 @@ from PyQt5.QtGui import QFont
 from IEC103 import analysis
 from feedback_win import FeedBack
 from override import TextView, Button4Icon
+from remote_login_win import Login
 
 
 class Msg_als(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.feedwin = FeedBack()
+        self.login = Login()
         self.common_init()
-        self.feeder_init()
+        self.style_feeder()
         self.init_action_connect()
         self.setWindowIcon(QtGui.QIcon('icon/图标.svg'))
         self.setWindowTitle('报文')
@@ -23,8 +25,9 @@ class Msg_als(QtWidgets.QMainWindow):
     def init_action_connect(self):
         self.action_open.triggered.connect(self.open_file)
         self.action_save.triggered.connect(self.save_file)
-        self.incoming_cabinet_201_202.triggered.connect(self.incoming_init)
-        self.feeder_cabinet_211_212_213_214_215_216.triggered.connect(self.feeder_init)
+        self.action_open_remote.triggered.connect(self.remote)
+        self.feeder_cabinet_211_212_213_214_215_216.triggered.connect(self.style_feeder)
+        self.incoming_cabinet_201_202.triggered.connect(self.style_incoming)
         self.pushButton_note.clicked.connect(self.open_edit)
         self.pushButton_save.clicked.connect(self.save_file)
         self.pushButton_search.clicked.connect(self.search)
@@ -58,12 +61,22 @@ class Msg_als(QtWidgets.QMainWindow):
         self.protocol_103 = self.menu_P.addMenu(qtawesome.icon('fa.file-word-o', color='black'), '103协议')
         self.protocol_103.addAction(self.incoming_cabinet_201_202)
         self.protocol_103.addAction(self.feeder_cabinet_211_212_213_214_215_216)
+        self.setStyleSheet('''
+        QMenu{background:#F6F6F6;
+        color:black;
+        font-family:"新宋体"}
+        QMenu:item:selected{ 
+        background-color: #C9DEF5;}
+        QMenuBar:item:selected{background-color: #F6F6F6;}
+        QStatusBar:item {
+        border:none；}
+        ''')
         """状态栏"""
         self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.setEnabled(True)
         self.statusbar.setObjectName("statusbar")
         self.statusbar_label = QtWidgets.QLabel()
-        self.statusbar_label.setText('当前模式:馈线柜')
+        self.statusbar_label.setText('当前模式: 馈线柜')
         self.statusbar.addPermanentWidget(self.statusbar_label)
         self.setStatusBar(self.statusbar)
         """主窗口"""
@@ -180,13 +193,9 @@ class Msg_als(QtWidgets.QMainWindow):
         border-top-left-radius:1px;border-top-right-radius:1px;}
         QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
 
-    def feeder_init(self):
-        self.statusbar_label.setText('当前模式:馈线柜')
-        self.statusbar.showMessage('请打开馈线柜日志文件')
-        self.style_incoming()
-
-    def incoming_init(self):
-        self.statusbar_label.setText('当前模式:进线柜')
+    def style_incoming(self):
+        """进线柜界面"""
+        self.statusbar_label.setText('当前模式: 进线柜')
         self.statusbar.showMessage('请打开进线柜日志文件')
         """样式表"""
         self.setWindowOpacity(0.99)  # 窗口透明度
@@ -215,7 +224,7 @@ class Msg_als(QtWidgets.QMainWindow):
             QComboBox#left_combobox{border: 1px;
             border-color: darkgray;
             border-style: solid;}
-            QComboBox#left_combobox::down-arrow{image:url(icon/arrow2_feeder.svg);}
+            QComboBox#left_combobox::down-arrow{image:url(icon/arrow2_incoming.svg);}
             QComboBox#left_combobox::drop-down{
             border-left-width: 1px;
             border-left-color: darkgray;
@@ -238,8 +247,10 @@ class Msg_als(QtWidgets.QMainWindow):
         self.main_widget.setStyleSheet('''
             background-color:#FFFFFF;''')
 
-    def style_incoming(self):
-        """样式表"""
+    def style_feeder(self):
+        """馈线柜样式表"""
+        self.statusbar_label.setText('当前模式: 馈线柜')
+        self.statusbar.showMessage('请打开馈线柜日志文件')
         self.setWindowOpacity(0.99)  # 窗口透明度
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # 设置窗口背景透明
         self.left_widget.setStyleSheet('''
@@ -268,7 +279,7 @@ class Msg_als(QtWidgets.QMainWindow):
             border-radius: 1px;
             padding: 1px 18px 1px 3px;
             border-color: darkgray;}
-            QComboBox#left_combobox::down-arrow{image:url(icon/arrow2_incoming.svg);}
+            QComboBox#left_combobox::down-arrow{image:url(icon/arrow2_feeder.svg);}
             QComboBox#left_combobox::drop-down{
             subcontrol-origin: padding;
             subcontrol-position: top right;
@@ -276,7 +287,18 @@ class Msg_als(QtWidgets.QMainWindow):
             border-left-width: 1px;
             border-left-color: darkgray;
             border-top-right-radius: 1px;
-            border-bottom-right-radius: 1px;}''')
+            border-bottom-right-radius: 1px;}
+            ''')
+        self.transform_widget.setStyleSheet('''
+                    QFrame#title{background-color: #232F3F;
+                    border-top-left-radius:1px;border-top-right-radius:1px;}
+                    QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
+        self.display_select.setStyleSheet('''
+                    QTextEdit{
+                    color:#000000;
+                    background-color:#F5F5F5;
+                    border:1px solid gray;
+                    width:300px;}''')
         self.menubar.setStyleSheet('''
             menu_F:hover{
             background-color:#4B6EAF;}''')
@@ -497,3 +519,6 @@ class Msg_als(QtWidgets.QMainWindow):
         for m in temp_result[1].keys():
             self.display_result.append(
                 m + temp_result[1][m] + '<hr style=" height:2px;border:none;border-top:2px dotted #008080;" />')
+
+    def remote(self):
+        self.login.show()
