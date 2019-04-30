@@ -9,6 +9,7 @@ from IEC103 import analysis
 from feedback_win import FeedBack
 from override import TextView, Button4Icon
 from remote_login_win import Login
+import paramiko
 
 
 class Msg_als(QtWidgets.QMainWindow):
@@ -522,5 +523,11 @@ class Msg_als(QtWidgets.QMainWindow):
 
     def remote(self):
         self.login.show()
-        # TODO
-        # 远程登录程序
+        self.login.mySignal.connect(self.showlogin)
+
+    def showlogin(self, connect):
+        transport = paramiko.Transport((connect['host'], connect['port']))
+        transport.connect(username=connect['username'], password=connect['password'])
+        sftp = paramiko.SFTPClient.from_transport(transport)
+        transport.close()
+        print(transport)

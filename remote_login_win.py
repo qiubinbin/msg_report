@@ -1,13 +1,16 @@
 import qtawesome
 from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtCore import QRegExp
+from PyQt5.QtCore import QRegExp, pyqtSignal
 from PyQt5.QtGui import QColor
 
 from button_beautify import AnimationShadowEffect
 from override import LineEdit
-import paramiko
+
 
 class Login(QtWidgets.QFrame):
+    # 自定义信号
+    mySignal = pyqtSignal(dict)
+
     def __init__(self):
         super().__init__()
         self.initui()
@@ -35,7 +38,7 @@ class Login(QtWidgets.QFrame):
         self.pushbutton_login.setGraphicsEffect(self.pushbutton_login_animation)
         self.pushbutton_login_animation.start()
         self.pushbutton_login.setObjectName('button1')
-        self.pushbutton_login.clicked.connect(self.login)
+        self.pushbutton_login.clicked.connect(self.sendsignal)
         self.pushbutton_close = QtWidgets.QPushButton('关闭')
         self.pushbutton_close.clicked.connect(self.close)
         self.pushbutton_close.setObjectName('button2')
@@ -43,7 +46,8 @@ class Login(QtWidgets.QFrame):
         self.combobox_protocol.addItem('SFTP')
         self.combobox_protocol.addItem('FTP')
         self.linedit_host = LineEdit()
-        self.linedit_host.setValidator(QtGui.QRegExpValidator(QRegExp(r'^[0-9]{2,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')))
+        self.linedit_host.setValidator(
+            QtGui.QRegExpValidator(QRegExp(r'^[0-9]{2,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')))
         self.linedit_username = LineEdit()
         self.linedit_username.setValidator(QtGui.QRegExpValidator(QRegExp(r'^[a-zA-Z0-9_-]{3,16}')))
         self.linedit_password = LineEdit()
@@ -74,8 +78,16 @@ class Login(QtWidgets.QFrame):
         QPushButton#button2:hover{background:#EFEFEF;border:1px solid #E6E6ED;padding:1px}
         QPushButton#label{border:none;background:none;font-family:"Source Han Sans";font-size:11pd;font-weight:487;text-align:left}''')
 
-    def login(self):
+    def sendsignal(self):
         """连接到服务器"""
+        message = {}
+        message['protocol'] = self.combobox_protocol.currentText()
+        message['host'] = self.linedit_host.text()
+        message['port'] = int(self.qspinbox_port.text())
+        message['username'] = self.linedit_username.text()
+        message['password'] = self.linedit_password.text()
+        self.mySignal.emit(message)
+        self.close()
 
 
 if __name__ == '__main__':
