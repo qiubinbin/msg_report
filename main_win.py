@@ -529,5 +529,7 @@ class Msg_als(QtWidgets.QMainWindow):
         transport = paramiko.Transport((connect['host'], connect['port']))
         transport.connect(username=connect['username'], password=connect['password'])
         sftp = paramiko.SFTPClient.from_transport(transport)
+        # TODO
+        # sftp.get()#下载文件
         transport.close()
         print(transport)
