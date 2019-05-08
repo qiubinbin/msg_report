@@ -68,7 +68,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.action_open.setShortcut('Ctrl+O')
         self.action_save = QtWidgets.QAction(qtawesome.icon('fa.save', color="black"), '保存(S)')
         self.action_save.setShortcut('Ctrl+S')
-        self.action_open_remote = QtWidgets.QAction(qtawesome.icon('fa.skyatlas', color="black"), '远程')
+        self.action_open_remote = QtWidgets.QAction(qtawesome.icon('fa.exchange', color="black"), '远程')
         self.action_open_remote.setShortcut('Ctrl+R')
         self.action_about = QtWidgets.QAction('关于')
         self.incoming_cabinet_201_202 = QtWidgets.QAction(qtawesome.icon('fa.share'), '进线柜')
