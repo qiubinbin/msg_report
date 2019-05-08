@@ -4,12 +4,34 @@ import re
 import qtawesome
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QFont
+from PyQt5.QtCore import pyqtSignal
 
 from IEC103 import analysis
 from feedback_win import FeedBack
 from override import TextView, Button4Icon
 from remote_login_win import Login
 import paramiko
+
+
+class File_copy(QtCore.QThread):
+    # mySignal = pyqtSignal(str)
+
+    def __init__(self, connect=None, statusbar=None):
+        super().__init__()
+        self.connect = connect
+        self.statusbar = statusbar
+
+    def run(self):
+        try:
+            transport = paramiko.Transport((self.connect['host'], self.connect['port']))
+            QtWidgets.QApplication.processEvents()
+            transport.connect(username=self.connect['username'], password=self.connect['password'])
+            sftp = paramiko.SFTPClient.from_transport(transport)
+            sftp.get(remotepath='/', localpath=r'C:\*.txt')  # 下载文件,目录待定
+            transport.close()
+            self.statusbar.showMessage('文件传输已完成')
+        except Exception as e:
+            self.statusbar.showMessage(str(e))
 
 
 class Msg_als(QtWidgets.QMainWindow):
@@ -62,24 +84,34 @@ class Msg_als(QtWidgets.QMainWindow):
         self.protocol_103 = self.menu_P.addMenu(qtawesome.icon('fa.file-word-o', color='black'), '103协议')
         self.protocol_103.addAction(self.incoming_cabinet_201_202)
         self.protocol_103.addAction(self.feeder_cabinet_211_212_213_214_215_216)
+        # 设置菜单栏样式
         self.setStyleSheet('''
         QMenu{background:#F6F6F6;
         color:black;
         font-family:"新宋体"}
         QMenu:item:selected{ 
         background-color: #C9DEF5;}
-        QMenuBar:item:selected{background-color: #F6F6F6;}
-        QStatusBar:item {
-        border:none；}
-        ''')
+        QMenuBar:item:selected{background-color: #F6F6F6;}''')
         """状态栏"""
         self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.setEnabled(True)
         self.statusbar.setObjectName("statusbar")
         self.statusbar_label = QtWidgets.QLabel()
         self.statusbar_label.setText('当前模式: 馈线柜')
+        self.progressbar = QtWidgets.QProgressBar()
+        self.progressbar.setFixedSize(200, 16)
+        self.progressbar.hide()  # 初始隐藏
+        self.statusbar.addPermanentWidget(self.progressbar)
         self.statusbar.addPermanentWidget(self.statusbar_label)
         self.setStatusBar(self.statusbar)
+        # 设置状态栏样式
+        self.setStyleSheet('''
+        QStatusBar:item {
+        font-family:"Source Han Sans";
+        font-size:11pd;
+        font-weight:487;
+        background-color:#FFFFFF;
+        border:none;} ''')
         """主窗口"""
         self.setWindowTitle('报文分析')
         # self.setWindowIcon(QIcon('images/icon.png'))
@@ -243,8 +275,6 @@ class Msg_als(QtWidgets.QMainWindow):
         self.menubar.setStyleSheet('''
             menu_F:hover{
             background-color:#4B6EAF;}''')
-        self.statusbar.setStyleSheet('''
-            background-color:#FFFFFF;''')
         self.main_widget.setStyleSheet('''
             background-color:#FFFFFF;''')
 
@@ -526,10 +556,5 @@ class Msg_als(QtWidgets.QMainWindow):
         self.login.mySignal.connect(self.showlogin)
 
     def showlogin(self, connect):
-        transport = paramiko.Transport((connect['host'], connect['port']))
-        transport.connect(username=connect['username'], password=connect['password'])
-        sftp = paramiko.SFTPClient.from_transport(transport)
-        # TODO
-        # sftp.get()#下载文件
-        transport.close()
-        print(transport)
+        self.thread_file = File_copy(connect, self.statusbar)
+        self.thread_file.start()

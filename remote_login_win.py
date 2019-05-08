@@ -44,7 +44,6 @@ class Login(QtWidgets.QFrame):
         self.pushbutton_close.setObjectName('button2')
         self.combobox_protocol = QtWidgets.QComboBox()
         self.combobox_protocol.addItem('SFTP')
-        self.combobox_protocol.addItem('FTP')
         self.linedit_host = LineEdit()
         self.linedit_host.setValidator(
             QtGui.QRegExpValidator(QRegExp(r'^[0-9]{2,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')))
@@ -80,6 +79,7 @@ class Login(QtWidgets.QFrame):
 
     def sendsignal(self):
         """连接到服务器"""
+        self.close()
         message = {}
         message['protocol'] = self.combobox_protocol.currentText()
         message['host'] = self.linedit_host.text()
@@ -87,7 +87,6 @@ class Login(QtWidgets.QFrame):
         message['username'] = self.linedit_username.text()
         message['password'] = self.linedit_password.text()
         self.mySignal.emit(message)
-        self.close()
 
 
 if __name__ == '__main__':
