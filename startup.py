@@ -8,4 +8,3 @@ app = QtWidgets.QApplication(sys.argv)
 win = Msg_als()
 win.show()
 sys.exit(app.exec_())
-

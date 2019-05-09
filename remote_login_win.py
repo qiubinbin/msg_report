@@ -1,3 +1,4 @@
+"""处理远程登录信息"""
 import qtawesome
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import QRegExp, pyqtSignal

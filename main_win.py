@@ -1,25 +1,26 @@
+"""主窗口"""
 import collections
 import re
 
+import paramiko
 import qtawesome
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import pyqtSignal
 
 from IEC103 import analysis
+from dowload import File_dowload
 from feedback_win import FeedBack
 from override import TextView, Button4Icon
 from remote_login_win import Login
-import paramiko
 
 
 class File_copy(QtCore.QThread):
-    # mySignal = pyqtSignal(str)
 
     def __init__(self, connect=None, statusbar=None):
         super().__init__()
         self.connect = connect
         self.statusbar = statusbar
+        self.remote_path = r'/home/...'  # 远程服务器日志文件夹地址
 
     def run(self):
         try:
@@ -27,9 +28,10 @@ class File_copy(QtCore.QThread):
             QtWidgets.QApplication.processEvents()
             transport.connect(username=self.connect['username'], password=self.connect['password'])
             sftp = paramiko.SFTPClient.from_transport(transport)
-            sftp.get(remotepath='/', localpath=r'C:\*.txt')  # 下载文件,目录待定
-            transport.close()
-            self.statusbar.showMessage('文件传输已完成')
+            remote_files = sftp.listdir(self.remote_path)  # 获取远程文件夹中的文件列表
+            self.widget = File_dowload(self.remote_path, remote_files, transport, self.statusbar)
+            self.widget.show()
+
         except Exception as e:
             self.statusbar.showMessage(str(e))
 
