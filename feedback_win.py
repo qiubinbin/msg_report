@@ -1,13 +1,10 @@
 import time
 
-import qtawesome
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
-from button_beautify import AnimationShadowEffect
-from override import TextView
+from override import TextView, Button4ok, Button4cancel
 
 
 class FeedBack(QtWidgets.QDialog):
@@ -30,14 +27,9 @@ class FeedBack(QtWidgets.QDialog):
         self.content = TextView()
         self.content.setObjectName('content')
         self.label = QtWidgets.QLabel('意见反馈')
-        self.send = QtWidgets.QPushButton(qtawesome.icon('fa.send', color='white'), '发送')
-        self.send.setObjectName('button1')
+        self.send = Button4ok('发送')
         self.send.setFixedSize(72, 23)
-        self.send_animation = AnimationShadowEffect(QColor('#87D087'), self.send)
-        self.send.setGraphicsEffect(self.send_animation)
-        self.send_animation.start()
-        self.cancel = QtWidgets.QPushButton(qtawesome.icon('fa.window-close', color='#60607A'), '取消')
-        self.cancel.setObjectName('button2')
+        self.cancel = Button4cancel('取消')
         self.cancel.setFixedSize(72, 23)
         self.main_layout.addWidget(self.label, 0, 0, 1, 2)
         self.main_layout.addWidget(self.content, 1, 0, 3, 4)
@@ -65,12 +57,7 @@ class FeedBack(QtWidgets.QDialog):
         border-top-right-radius:3px;
         border-bottom-left-radius:3px;
         border-bottom-right-radius:3px;}
-        QLabel{background:none;border:none;font-size:10pd;font-family:"等线"}
-        QPushButton#button1{border-style:none;padding:5px;border-radius:2px;background:#87D087;font-size:11pd;
-            font-weight:bold;color:white;font-family:"Source Han Sans"}
-        QPushButton#button2{border-style:none;padding:5px;border-radius:2px;border-color:gray;background:#FFFFFF;font-size:11pd;
-            font-weight:bold;color:#60607A;font-family:"Source Han Sans"}
-        QPushButton#button2:hover{background:#EFEFEF;border:1px solid #E6E6ED;padding:1px}''')
+        QLabel{background:none;border:none;font-size:10pd;font-family:"等线"}''')
         """动作"""
         self.cancel.clicked.connect(self.close)
         self.send.clicked.connect(self.savelog)

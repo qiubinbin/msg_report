@@ -2,9 +2,8 @@
 import paramiko
 import qtawesome
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QColor
 
-from button_beautify import AnimationShadowEffect
+from override import Button4ok, Button4cancel
 
 
 class File_dowload(QtWidgets.QFrame):
@@ -19,20 +18,15 @@ class File_dowload(QtWidgets.QFrame):
 
     def initui(self):
         self.setWindowTitle('download')
-        self.setWindowIcon(qtawesome.icon('fa.cloud-download', color='black'))
+        self.setWindowIcon(qtawesome.icon('fa.cloud-download', color='#7189bf'))
         self.main_layout = QtWidgets.QGridLayout()
         self.list_widget = QtWidgets.QListWidget()
         self.setFixedSize(300, 600)
-        self.button_cancel = QtWidgets.QPushButton('取消')
+        self.button_cancel = Button4cancel('取消')
         self.button_cancel.setFixedWidth(50)
-        self.button_cancel.setObjectName('button1')
         self.button_cancel.clicked.connect(self.close)
-        self.button_ok = QtWidgets.QPushButton('下载')
+        self.button_ok = Button4ok('下载')
         self.button_ok.setFixedWidth(50)
-        self.button_ok_animation = AnimationShadowEffect(QColor('#87D087'), self.button_ok)
-        self.button_ok.setGraphicsEffect(self.button_ok_animation)
-        self.button_ok_animation.start()
-        self.button_ok.setObjectName('button2')
         self.button_ok.clicked.connect(self.dowload)
         self.setLayout(self.main_layout)
         self.main_layout.addWidget(self.list_widget, 0, 0, 5, 6)
@@ -42,11 +36,6 @@ class File_dowload(QtWidgets.QFrame):
         """设置样式表"""
         self.setStyleSheet('''
                 QFrame{background:#FFFFFF;}
-                QPushButton#button2{border-style:none;padding:5px;border-radius:2px;background:#87D087;font-size:11pd;
-                    font-weight:bold;color:white;font-family:"Source Han Sans"}
-                QPushButton#button1{border-style:none;padding:5px;border-radius:2px;background:#FFFFFF;font-size:11pd;
-                    font-weight:bold;color:#60607A;font-family:"Source Han Sans"}
-                QPushButton#button1:hover{background:#EFEFEF;border:1px solid #E6E6ED;padding:1px}
                 QPushButton#label{border:none;background:none;font-family:"Source Han Sans";font-size:11pd;font-weight:487;text-align:left}''')
 
     def dowload(self):

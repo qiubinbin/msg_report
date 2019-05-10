@@ -2,10 +2,8 @@
 import qtawesome
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import QRegExp, pyqtSignal
-from PyQt5.QtGui import QColor
 
-from button_beautify import AnimationShadowEffect
-from override import LineEdit
+from override import LineEdit, Button4ok, Button4cancel
 
 
 class Login(QtWidgets.QFrame):
@@ -16,7 +14,7 @@ class Login(QtWidgets.QFrame):
         super().__init__()
         self.initui()
         self.setWindowTitle('登录')
-        self.setWindowIcon(qtawesome.icon('fa.sign-in'))
+        self.setWindowIcon(qtawesome.icon('fa.sign-in', color='#ff5959'))
         # self.setWindowOpacity(0.95)  # 窗口透明度
         self.setFixedSize(294, 241)
 
@@ -33,16 +31,11 @@ class Login(QtWidgets.QFrame):
         self.label_username.setObjectName('label')
         self.label_password = QtWidgets.QPushButton('密码')
         self.label_password.setObjectName('label')
-        self.pushbutton_login = QtWidgets.QPushButton('登录')
+        self.pushbutton_login = Button4ok('登录')
         self.pushbutton_login.setFixedSize(72, 23)
-        self.pushbutton_login_animation = AnimationShadowEffect(QColor('#87D087'), self.pushbutton_login)
-        self.pushbutton_login.setGraphicsEffect(self.pushbutton_login_animation)
-        self.pushbutton_login_animation.start()
-        self.pushbutton_login.setObjectName('button1')
         self.pushbutton_login.clicked.connect(self.sendsignal)
-        self.pushbutton_close = QtWidgets.QPushButton('关闭')
+        self.pushbutton_close = Button4cancel('关闭')
         self.pushbutton_close.clicked.connect(self.close)
-        self.pushbutton_close.setObjectName('button2')
         self.combobox_protocol = QtWidgets.QComboBox()
         self.combobox_protocol.addItem('SFTP')
         self.linedit_host = LineEdit()
@@ -74,11 +67,6 @@ class Login(QtWidgets.QFrame):
         QLineEdit{font-size:11pd; color:#60607A;font-family:"Consolas";}
         QSpinBox{font-size:11pd; color:#60607A;font-family:"Consolas";}
         QLineEdit#password{lineedit-password-character:9786;}
-        QPushButton#button1{border-style:none;padding:5px;border-radius:2px;background:#87D087;font-size:11pd;
-            font-weight:bold;color:white;font-family:"Source Han Sans"}
-        QPushButton#button2{border-style:none;padding:5px;border-radius:2px;background:#FFFFFF;font-size:11pd;
-            font-weight:bold;color:#60607A;font-family:"Source Han Sans"}
-        QPushButton#button2:hover{background:#EFEFEF;border:1px solid #E6E6ED;padding:1px}
         QPushButton#label{border:none;background:none;font-size:11pd;
             font-weight:bold;color:#60607A;font-family:"Source Han Sans";text-align:left}''')
 

@@ -12,7 +12,7 @@ from dowload_win import File_dowload
 from feedback_win import FeedBack
 from override import TextView, Button4Icon
 from remote_login_win import Login
-
+from setting_win import Setting
 
 class File_copy(QtCore.QThread):
 
@@ -40,6 +40,7 @@ class Msg_als(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.feedwin = FeedBack()
+        self.setting = Setting()
         self.login = Login()
         self.common_init()
         self.style_feeder()
@@ -51,6 +52,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.action_open.triggered.connect(self.open_file)
         self.action_save.triggered.connect(self.save_file)
         self.action_open_remote.triggered.connect(self.remote)
+        self.action_setting.triggered.connect(self.setting.show)
         self.feeder_cabin.triggered.connect(self.style_feeder)
         self.incoming_cabinet_201_202.triggered.connect(self.style_incoming)
         self.pushButton_note.clicked.connect(self.open_edit)

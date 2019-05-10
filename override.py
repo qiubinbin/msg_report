@@ -1,6 +1,10 @@
 """"复写以适应需求"""
 import qtawesome
 from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtCore import QRegExp, Qt
+from PyQt5.QtGui import QColor
+
+from button_beautify import AnimationShadowEffect
 
 
 class Button4Icon(QtWidgets.QPushButton):
@@ -83,3 +87,43 @@ class LineEdit(QtWidgets.QLineEdit):
         action_clear.triggered.connect(self.clear)
         action_paste.triggered.connect(self.paste)
         menu.exec_(QtGui.QCursor.pos())
+
+
+class Button4Setting(QtWidgets.QPushButton):
+    """复写qpushbutton"""
+
+    def __init__(self, content):
+        super().__init__(content)
+        self.setStyleSheet('''font-family:"微软雅黑";border:none''')
+        self.setFixedWidth(70)
+
+
+class LineEdit1(QtWidgets.QLineEdit):
+    """复写qlineedit"""
+
+    def __init__(self):
+        super().__init__()
+        self.setAlignment(Qt.AlignCenter)
+        self.setValidator(QtGui.QRegExpValidator(QRegExp(r'^[0-9A-E]{2}')))
+        self.setStyleSheet('''font-family:"Consolas";''')
+        self.setFixedWidth(70)
+
+
+class Button4ok(QtWidgets.QPushButton):
+    def __init__(self, content):
+        super().__init__(content)
+        self.animation = AnimationShadowEffect(QColor('#87D087'), self)
+        self.setGraphicsEffect(self.animation)
+        self.animation.start()
+        self.setStyleSheet('''
+        QPushButton{border-style:none;padding:5px;border-radius:2px;background:#87D087;font-size:11pd;
+            font-weight:bold;color:white;font-family:"Source Han Sans"}''')
+
+
+class Button4cancel(QtWidgets.QPushButton):
+    def __init__(self, content):
+        super().__init__(content)
+        self.setStyleSheet('''
+        QPushButton{border-style:none;padding:5px;border-radius:2px;background:#FFFFFF;font-size:11pd;
+            font-weight:bold;color:#60607A;font-family:"Source Han Sans"}
+        QPushButton:hover{background:#EFEFEF;border:1px solid #E6E6ED;padding:1px}''')
