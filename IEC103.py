@@ -7,13 +7,13 @@ slave2master_function = {0: '确认',
                          8: '以数据包响应请求帧',
                          9: '从站没有所召唤的数据',
                          11: '从站以链路状态响应主站请求'}
-master2slave_funtion = {0: '复位通信单元',
-                        3: '传送数据',
-                        4: '传送数据',
-                        7: '传送数据',
-                        9: '召唤链路状态',
-                        10: '召唤1级数据',
-                        11: '召唤2级数据'}
+master2slave_function = {0: '复位通信单元',
+                         3: '传送数据',
+                         4: '传送数据',
+                         7: '传送数据',
+                         9: '召唤链路状态',
+                         10: '召唤1级数据',
+                         11: '召唤2级数据'}
 master2slave_transform = {8: '时间同步',
                           9: '总召启动',
                           12: '未知传送原因',
@@ -63,7 +63,7 @@ def control_analysis(control_message: str):
         else:
             content += '&nbsp;&nbsp;&nbsp;帧计数有效位(FCV):0<br>'
         function_code = int(temp[4:], 2)
-        content += '&nbsp;&nbsp;&nbsp;功能码:' + str(function_code) + ' ' + master2slave_funtion[function_code]
+        content += '&nbsp;&nbsp;&nbsp;功能码:' + str(function_code) + ' ' + master2slave_function[function_code]
     else:
         content += '&nbsp;&nbsp;&nbsp;启动报文位(PRM):0 ' + '从站 → 主站<br>'
         if int(temp[2]):

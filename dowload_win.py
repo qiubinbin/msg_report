@@ -18,6 +18,7 @@ class File_dowload(QtWidgets.QFrame):
         self.initui()
 
     def initui(self):
+        self.setWindowTitle('download')
         self.setWindowIcon(qtawesome.icon('fa.cloud-download', color='black'))
         self.main_layout = QtWidgets.QGridLayout()
         self.list_widget = QtWidgets.QListWidget()
@@ -35,8 +36,8 @@ class File_dowload(QtWidgets.QFrame):
         self.button_ok.clicked.connect(self.dowload)
         self.setLayout(self.main_layout)
         self.main_layout.addWidget(self.list_widget, 0, 0, 5, 6)
-        self.main_layout.addWidget(self.button_cancel, 5, 1, 1, 1)
-        self.main_layout.addWidget(self.button_ok, 5, 4, 1, 1)
+        self.main_layout.addWidget(self.button_ok, 5, 1, 1, 1)
+        self.main_layout.addWidget(self.button_cancel, 5, 4, 1, 1)
         self.list_widget.addItems(self.filelist)
         """设置样式表"""
         self.setStyleSheet('''

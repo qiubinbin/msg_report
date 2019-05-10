@@ -1,5 +1,6 @@
-import qtawesome
 import time
+
+import qtawesome
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
@@ -69,7 +70,7 @@ class FeedBack(QtWidgets.QDialog):
             font-weight:bold;color:white;font-family:"Source Han Sans"}
         QPushButton#button2{border-style:none;padding:5px;border-radius:2px;border-color:gray;background:#FFFFFF;font-size:11pd;
             font-weight:bold;color:#60607A;font-family:"Source Han Sans"}
-        QPushButton#button2:hover{background:#EFEFEF;border:1px solid #E6E6ED}''')
+        QPushButton#button2:hover{background:#EFEFEF;border:1px solid #E6E6ED;padding:1px}''')
         """动作"""
         self.cancel.clicked.connect(self.close)
         self.send.clicked.connect(self.savelog)

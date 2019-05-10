@@ -70,13 +70,17 @@ class Login(QtWidgets.QFrame):
         """设置样式表"""
         self.setStyleSheet('''
         QFrame{background:#F5F5F5;}
-        QLineEdit#password{lineedit-password-character:9786}
+        QComboBox{font-size:11pd; color:#60607A;font-family:"Consolas";}
+        QLineEdit{font-size:11pd; color:#60607A;font-family:"Consolas";}
+        QSpinBox{font-size:11pd; color:#60607A;font-family:"Consolas";}
+        QLineEdit#password{lineedit-password-character:9786;}
         QPushButton#button1{border-style:none;padding:5px;border-radius:2px;background:#87D087;font-size:11pd;
             font-weight:bold;color:white;font-family:"Source Han Sans"}
         QPushButton#button2{border-style:none;padding:5px;border-radius:2px;background:#FFFFFF;font-size:11pd;
             font-weight:bold;color:#60607A;font-family:"Source Han Sans"}
         QPushButton#button2:hover{background:#EFEFEF;border:1px solid #E6E6ED;padding:1px}
-        QPushButton#label{border:none;background:none;font-family:"Source Han Sans";font-size:11pd;font-weight:487;text-align:left}''')
+        QPushButton#label{border:none;background:none;font-size:11pd;
+            font-weight:bold;color:#60607A;font-family:"Source Han Sans";text-align:left}''')
 
     def sendsignal(self):
         """连接到服务器"""

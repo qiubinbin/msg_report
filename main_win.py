@@ -8,7 +8,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QFont
 
 from IEC103 import analysis
-from dowload import File_dowload
+from dowload_win import File_dowload
 from feedback_win import FeedBack
 from override import TextView, Button4Icon
 from remote_login_win import Login
@@ -51,7 +51,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.action_open.triggered.connect(self.open_file)
         self.action_save.triggered.connect(self.save_file)
         self.action_open_remote.triggered.connect(self.remote)
-        self.feeder_cabinet_211_212_213_214_215_216.triggered.connect(self.style_feeder)
+        self.feeder_cabin.triggered.connect(self.style_feeder)
         self.incoming_cabinet_201_202.triggered.connect(self.style_incoming)
         self.pushButton_note.clicked.connect(self.open_edit)
         self.pushButton_save.clicked.connect(self.save_file)
@@ -74,7 +74,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.action_open_remote.setShortcut('Ctrl+R')
         self.action_about = QtWidgets.QAction('关于')
         self.incoming_cabinet_201_202 = QtWidgets.QAction(qtawesome.icon('fa.share'), '进线柜')
-        self.feeder_cabinet_211_212_213_214_215_216 = QtWidgets.QAction(qtawesome.icon('fa.share'), '馈线柜')
+        self.feeder_cabin = QtWidgets.QAction(qtawesome.icon('fa.share'), '馈线柜')
         self.menubar = self.menuBar()
         self.menu_F = self.menubar.addMenu('文件')
         self.menu_F.addAction(self.action_open)
@@ -82,15 +82,17 @@ class Msg_als(QtWidgets.QMainWindow):
         self.menu_F.addAction(self.action_open_remote)
         self.menu_P = self.menubar.addMenu('协议')
         self.menu_H = self.menubar.addMenu('帮助')
+        self.action_setting = QtWidgets.QAction(qtawesome.icon('fa.cog', color='black'), '设置')
         self.menu_H.addAction(self.action_about)
+        self.menu_H.addAction(self.action_setting)
         self.protocol_103 = self.menu_P.addMenu(qtawesome.icon('fa.file-word-o', color='black'), '103协议')
         self.protocol_103.addAction(self.incoming_cabinet_201_202)
-        self.protocol_103.addAction(self.feeder_cabinet_211_212_213_214_215_216)
+        self.protocol_103.addAction(self.feeder_cabin)
         # 设置菜单栏样式
         self.setStyleSheet('''
         QMenu{background:#F6F6F6;
         color:black;
-        font-family:"新宋体"}
+        font-family:"微软雅黑"}
         QMenu:item:selected{ 
         background-color: #C9DEF5;}
         QMenuBar:item:selected{background-color: #F6F6F6;}''')
@@ -100,16 +102,21 @@ class Msg_als(QtWidgets.QMainWindow):
         self.statusbar.setObjectName("statusbar")
         self.statusbar_label = QtWidgets.QLabel()
         self.statusbar_label.setText('当前模式: 馈线柜')
-        self.progressbar = QtWidgets.QProgressBar()
-        self.progressbar.setFixedSize(200, 16)
-        self.progressbar.hide()  # 初始隐藏
-        self.statusbar.addPermanentWidget(self.progressbar)
+        # self.progressbar = QtWidgets.QProgressBar()
+        # self.progressbar.setFixedSize(200, 16)
+        # self.progressbar.hide()  # 初始隐藏
+        # self.statusbar.addPermanentWidget(self.progressbar)
         self.statusbar.addPermanentWidget(self.statusbar_label)
         self.setStatusBar(self.statusbar)
         # 设置状态栏样式
-        self.setStyleSheet('''
+        self.statusbar_label.setStyleSheet('''
+        QLabel{font-family:"微软雅黑";
+        font-size:11pd;
+        font-weight:487;
+        border:none;}''')
+        self.statusbar.setStyleSheet('''
         QStatusBar:item {
-        font-family:"Source Han Sans";
+        font-family:"微软雅黑";
         font-size:11pd;
         font-weight:487;
         background-color:#FFFFFF;
