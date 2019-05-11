@@ -5,6 +5,7 @@ import re
 import paramiko
 import qtawesome
 from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFont
 
 from IEC103 import analysis
@@ -14,13 +15,16 @@ from override import TextView, Button4Icon
 from remote_login_win import Login
 from setting_win import Setting
 
+
 class File_copy(QtCore.QThread):
+    mySignal = pyqtSignal(dict)
 
     def __init__(self, connect=None, statusbar=None):
         super().__init__()
         self.connect = connect
         self.statusbar = statusbar
-        self.remote_path = r'/home/...'  # 远程服务器日志文件夹地址
+        self.remote_path = r'/etc/apm/event.d/'  # 远程服务器日志文件夹地址
+        self.content = dict()
 
     def run(self):
         try:
@@ -29,8 +33,11 @@ class File_copy(QtCore.QThread):
             transport.connect(username=self.connect['username'], password=self.connect['password'])
             sftp = paramiko.SFTPClient.from_transport(transport)
             remote_files = sftp.listdir(self.remote_path)  # 获取远程文件夹中的文件列表
-            self.widget = File_dowload(self.remote_path, remote_files, transport, self.statusbar)
-            self.widget.show()
+            self.content['remote_path'] = self.remote_path
+            self.content['filelist'] = remote_files
+            self.content['transport'] = transport
+            self.content['statusbar'] = self.statusbar
+            self.mySignal.emit(self.content)
 
         except Exception as e:
             self.statusbar.showMessage(str(e))
@@ -569,3 +576,8 @@ class Msg_als(QtWidgets.QMainWindow):
     def showlogin(self, connect):
         self.thread_file = File_copy(connect, self.statusbar)
         self.thread_file.start()
+        self.thread_file.mySignal.connect(self.showdownload)
+
+    def showdownload(self, connect):
+        self.widget = File_dowload(connect['remote_path'], connect['filelist'], connect['transport'], connect['statusbar'])
+        self.widget.show()

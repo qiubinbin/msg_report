@@ -9,7 +9,7 @@ from override import Button4ok, Button4cancel
 class File_dowload(QtWidgets.QFrame):
     def __init__(self, remote_path=None, filelist=[], transport=None, statusbar=None):
         super().__init__()
-        self.localpath = r'C:\*.txt'
+        self.localpath = r'C:/Users/qiubi/Desktop/'
         self.remote_path = remote_path
         self.filelist = filelist
         self.transport = transport
@@ -39,9 +39,11 @@ class File_dowload(QtWidgets.QFrame):
                 QPushButton#label{border:none;background:none;font-family:"Source Han Sans";font-size:11pd;font-weight:487;text-align:left}''')
 
     def dowload(self):
-        sftp = paramiko.SFTPClient.from_transport(self.transport)
         self.currentindex = self.list_widget.currentRow()
-        sftp.get(remotepath=self.remote_path + self.filelist[self.currentindex], localpath=self.localpath)  # 下载文件,目录待定
+        path = QtWidgets.QFileDialog.getExistingDirectory(self,'打开','C:\\')
+        sftp = paramiko.SFTPClient.from_transport(self.transport)
+        sftp.get(remotepath=self.remote_path + self.filelist[self.currentindex],
+                 localpath=path +'/'+ self.filelist[self.currentindex])  # 下载文件,目录待定
         self.transport.close()
         self.close()
         self.statusbar.showMessage('已下载至：' + self.localpath)
