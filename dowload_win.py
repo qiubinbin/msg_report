@@ -40,10 +40,10 @@ class File_dowload(QtWidgets.QFrame):
 
     def dowload(self):
         self.currentindex = self.list_widget.currentRow()
-        path = QtWidgets.QFileDialog.getExistingDirectory(self,'打开','C:\\')
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, '打开', 'C:\\')
         sftp = paramiko.SFTPClient.from_transport(self.transport)
         sftp.get(remotepath=self.remote_path + self.filelist[self.currentindex],
-                 localpath=path +'/'+ self.filelist[self.currentindex])  # 下载文件,目录待定
+                 localpath=path + '/' + self.filelist[self.currentindex])  # 下载文件,目录待定
         self.transport.close()
         self.close()
         self.statusbar.showMessage('已下载至：' + self.localpath)
