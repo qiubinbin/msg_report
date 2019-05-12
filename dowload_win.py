@@ -2,7 +2,7 @@
 import paramiko
 import qtawesome
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 
 from override import Button4ok, Button4cancel
 
@@ -21,6 +21,7 @@ class OpenTip(QtWidgets.QFrame):
         self.main_layout = QtWidgets.QHBoxLayout()
         self.button_open = Button4ok('打开')
         self.button_cancle = Button4cancel('取消')
+        self.button_cancle.setToolTip('稍后可手动打开')
         self.button_cancle.setObjectName('cancle')
         self.setLayout(self.main_layout)
         self.main_layout.addWidget(self.button_open)
@@ -68,6 +69,9 @@ class File_dowload(QtWidgets.QFrame):
         self.main_layout.addWidget(self.button_ok, 5, 1, 1, 1)
         self.main_layout.addWidget(self.button_cancel, 5, 4, 1, 1)
         self.list_widget.addItems(self.filelist)
+        """设置TAB顺序"""
+        self.button_ok.setFocusPolicy(Qt.NoFocus)
+        self.button_cancel.setFocusPolicy(Qt.NoFocus)
         """设置样式表"""
         self.setStyleSheet('''
                 QFrame{background:#FFFFFF;}

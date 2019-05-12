@@ -1,7 +1,7 @@
 """处理远程登录信息"""
 import qtawesome
 from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtCore import QRegExp, pyqtSignal
+from PyQt5.QtCore import QRegExp, pyqtSignal, Qt
 
 from override import LineEdit, Button4ok, Button4cancel
 
@@ -60,6 +60,15 @@ class Login(QtWidgets.QFrame):
         self.main_layout.addWidget(self.linedit_password, 5, 4, 1, 4)
         self.main_layout.addWidget(self.pushbutton_login, 6, 4, 1, 2)
         self.main_layout.addWidget(self.pushbutton_close, 6, 6, 1, 2)
+        """设置TAB顺序"""
+        self.label_protocol.setFocusPolicy(Qt.NoFocus)
+        self.label_host.setFocusPolicy(Qt.NoFocus)
+        self.label_port.setFocusPolicy(Qt.NoFocus)
+        self.label_username.setFocusPolicy(Qt.NoFocus)
+        self.label_password.setFocusPolicy(Qt.NoFocus)
+        self.combobox_protocol.setFocusPolicy(Qt.NoFocus)
+        self.pushbutton_login.setFocusPolicy(Qt.NoFocus)
+        self.pushbutton_close.setFocusPolicy(Qt.NoFocus)
         """设置样式表"""
         self.setStyleSheet('''
         QFrame{background:#F5F5F5;}

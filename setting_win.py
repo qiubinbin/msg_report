@@ -3,6 +3,7 @@ import configparser
 
 import qtawesome
 from PyQt5 import QtWidgets
+from  PyQt5.QtCore import Qt
 
 from override import LineEdit1, Button4Setting, Button4ok, Button4cancel
 
@@ -77,6 +78,19 @@ class Setting(QtWidgets.QFrame):
         self.main_layout.addWidget(self.group2, 0, 4, 3, 4)
         self.main_layout.addWidget(self.button_save, 3, 6, 1, 1)
         self.main_layout.addWidget(self.button_cancle, 3, 7, 1, 1)
+        """设置TAB顺序"""
+        self.group1_button_left1.setFocusPolicy(Qt.NoFocus)
+        self.group1_button_left2.setFocusPolicy(Qt.NoFocus)
+        self.group1_button_up1.setFocusPolicy(Qt.NoFocus)
+        self.group1_button_up2.setFocusPolicy(Qt.NoFocus)
+        self.group1_button_up3.setFocusPolicy(Qt.NoFocus)
+        self.group2_button_left1.setFocusPolicy(Qt.NoFocus)
+        self.group2_button_left2.setFocusPolicy(Qt.NoFocus)
+        self.group2_button_up1.setFocusPolicy(Qt.NoFocus)
+        self.group2_button_up2.setFocusPolicy(Qt.NoFocus)
+        self.group2_button_up3.setFocusPolicy(Qt.NoFocus)
+        self.button_save.setFocusPolicy(Qt.NoFocus)
+        self.button_cancle.setFocusPolicy(Qt.NoFocus)
         self.setStyleSheet('''
             QFrame{background:#F5F5F5;}
             QGroupBox{font-family:"微软雅黑";}''')
