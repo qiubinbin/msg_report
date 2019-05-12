@@ -2,11 +2,46 @@
 import paramiko
 import qtawesome
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import pyqtSignal
 
 from override import Button4ok, Button4cancel
 
 
+class OpenTip(QtWidgets.QFrame):
+    mySignal = pyqtSignal(bool)
+
+    def __init__(self):
+        super().__init__()
+        self.initui()
+
+    def initui(self):
+        self.setWindowIcon(qtawesome.icon('fa.exclamation-circle', color='red'))
+        self.setWindowTitle('下载完成，是否立即打开？')
+        self.setFixedSize(316, 50)
+        self.main_layout = QtWidgets.QHBoxLayout()
+        self.button_open = Button4ok('打开')
+        self.button_cancle = Button4cancel('取消')
+        self.button_cancle.setObjectName('cancle')
+        self.setLayout(self.main_layout)
+        self.main_layout.addWidget(self.button_open)
+        self.main_layout.addWidget(self.button_cancle)
+        self.button_cancle.clicked.connect(self.cancle)
+        self.button_open.clicked.connect(self.openfile)
+        self.setStyleSheet('''
+        QFrame{background:#FFFFFF;}''')
+
+    def cancle(self):
+        self.close()
+        self.mySignal.emit(False)
+
+    def openfile(self):
+        self.close()
+        self.mySignal.emit(True)
+
+
 class File_dowload(QtWidgets.QFrame):
+    mySignal = pyqtSignal(str)
+
     def __init__(self, remote_path=None, filelist=[], transport=None, statusbar=None):
         super().__init__()
         self.localpath = r'C:/Users/qiubi/Desktop/'
@@ -46,7 +81,8 @@ class File_dowload(QtWidgets.QFrame):
                  localpath=path + '/' + self.filelist[self.currentindex])  # 下载文件,目录待定
         self.transport.close()
         self.close()
-        self.statusbar.showMessage('已下载至：' + self.localpath)
+        self.statusbar.showMessage('已保存至：' + self.localpath)
+        self.mySignal.emit(path + '/')
 
 
 if __name__ == '__main__':

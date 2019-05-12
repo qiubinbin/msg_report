@@ -124,6 +124,6 @@ class Button4cancel(QtWidgets.QPushButton):
     def __init__(self, content):
         super().__init__(content)
         self.setStyleSheet('''
-        QPushButton{border-style:none;padding:5px;background:#FFFFFF;font-size:11pd;
+        QPushButton{border-style:none;padding:5px;background:#F4F4F4;font-size:11pd;
             font-weight:bold;color:#60607A;font-family:"Source Han Sans"}
         QPushButton:hover{background:#E5F1FB;border:1px solid #0078D7;padding:1px}''')

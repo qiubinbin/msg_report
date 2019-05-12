@@ -9,7 +9,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFont
 
 from IEC103 import analysis
-from dowload_win import File_dowload
+from dowload_win import File_dowload, OpenTip
 from feedback_win import FeedBack
 from override import TextView, Button4Icon
 from remote_login_win import Login
@@ -370,7 +370,7 @@ class Msg_als(QtWidgets.QMainWindow):
         except:
             pass
 
-    def open_file(self):
+    def open_file(self, connect=None):
         """文件打开显示并生成日期目录 """
         """重新打开文件重置窗口"""
         self.display_source.clear()
@@ -382,9 +382,14 @@ class Msg_als(QtWidgets.QMainWindow):
         self.comboBox_time2.clear()
         global dates_list
         dates_list = collections.OrderedDict()
+        print(connect)
         global file
-        file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', 'C:\\Users\\qiubi\\Desktop',
-                                                        'Text Files (*.txt)')
+        if connect:
+            file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', connect,
+                                                            'Text Files (*.txt)')
+        else:
+            file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', 'C:\\Users\\qiubi\\Desktop',
+                                                            'Text Files (*.txt)')
         self.statusbar.showMessage("已打开 " + file, msecs=20)
         pattern_date = re.compile(
             r'(?P<date1>2019-\d+-\d+) (?P<date2>\d{2}:\d{2}:\d{2})')
@@ -579,5 +584,22 @@ class Msg_als(QtWidgets.QMainWindow):
         self.thread_file.mySignal.connect(self.showdownload)
 
     def showdownload(self, connect):
-        self.widget = File_dowload(connect['remote_path'], connect['filelist'], connect['transport'], connect['statusbar'])
+        """下载窗口处理"""
+        self.widget = File_dowload(connect['remote_path'], connect['filelist'], connect['transport'],
+                                   connect['statusbar'])
         self.widget.show()
+        self.widget.mySignal.connect(self.tip)
+
+    def tip(self, connect):
+        """提示窗处理"""
+        self.tip_win = OpenTip()
+        self.tip_win.show()
+        self.path_download = connect
+        self.tip_win.mySignal.connect(self.open_file1)
+
+    def open_file1(self, connect):
+        """提示窗信号处理"""
+        if connect:
+            self.open_file(self.path_download)
+        else:
+            pass
