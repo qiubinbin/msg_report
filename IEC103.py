@@ -146,17 +146,17 @@ def asdu_analysis(asdu_message: str, control_message: str):
     content_asdu += asdu[8:10] + '&nbsp;&nbsp;功能类型:' + str(int(asdu[8:10], 16)) + '<br>'
     content_asdu += asdu[10:12] + '&nbsp;&nbsp;信息序号:' + str(int(asdu[10:12], 16)) + '<br>'
     if (asdu[8:10] == control_dict['馈线柜断路器分FUN']) & (asdu[10:12] == control_dict['馈线柜断路器分INF']) & (
-            asdu[12:14] == control_dict['馈线柜断路器分有效值']):
-        content_asdu += asdu[12:14] + '&nbsp;&nbsp;馈线柜断路器分闸控制'
+            asdu[12:14] == control_dict['馈线柜断路器分有效值']):  # F0 A0 01
+        content_asdu += asdu[12:14] + '&nbsp;&nbsp;馈线柜断路器分闸'
     elif (asdu[8:10] == control_dict['馈线柜断路器合FUN']) & (asdu[10:12] == control_dict['馈线柜断路器合INF']) & (
-            asdu[12:14] == ['馈线柜断路器合有效值']):
-        content_asdu += asdu[12:14] + '&nbsp;&nbsp;馈线柜断路器合闸控制'
+            asdu[12:14] == ['馈线柜断路器合有效值']):  # F0 A0 02
+        content_asdu += asdu[12:14] + '&nbsp;&nbsp;馈线柜断路器合闸'
     elif (asdu[8:10] == control_dict['进线柜断路器分FUN']) & (asdu[10:12] == control_dict['进线柜断路器分INF']) & (
-            asdu[12:14] == ['进线柜断路器分有效值']):
-        content_asdu += asdu[12:14] + '&nbsp;&nbsp;进线柜断路器分闸控制'
+            asdu[12:14] == ['进线柜断路器分有效值']):  # B2 46 02
+        content_asdu += asdu[12:14] + '&nbsp;&nbsp;进线柜断路器分闸'
     elif (asdu[8:10] == control_dict['进线柜断路器合FUN']) & (asdu[10:12] == control_dict['进线柜断路器合INF']) & (
-            asdu[12:14] == ['进线柜断路器合有效值']):
-        content_asdu += asdu[12:14] + '&nbsp;&nbsp;进线柜断路器合闸控制'
+            asdu[12:14] == ['进线柜断路器合有效值']):  # B2 47 02
+        content_asdu += asdu[12:14] + '&nbsp;&nbsp;进线柜断路器合闸'
     if int(asdu_type, 16) == 1:
         """处理带时标的报文"""
         content_asdu += '<br>' + asdu[14:18] + '&nbsp;秒:' + str(int(asdu[16:18] + asdu[14:16], 16) / 1000)
@@ -203,8 +203,6 @@ def analysis(message: str):
 
 
 if __name__ == '__main__':
-    text = """10 7B 09 84 16"""
-    temp = analysis(text)
-    print(temp[0])
-    for m in temp[1].keys():
-        print(m, temp[1][m])
+    text = """68 0E 0E 68 28 09 01 81 09 09 F0 A0 02 C4 0E 2B 04 00 58 16"""
+    # temp = analysis(text)
+    print(control_dict)
