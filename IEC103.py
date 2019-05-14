@@ -1,7 +1,48 @@
 """IEC103规约分析"""
 import collections
 import re
+import configparser
 
+conf = configparser.ConfigParser()
+conf.read('configure.ini', 'utf-8')
+control_dict = {
+    '馈线柜断路器分FUN': conf.items('馈线柜断路器分')[0][1],
+    '馈线柜断路器分INF': conf.items('馈线柜断路器分')[1][1],
+    '馈线柜断路器分有效值': conf.items('馈线柜断路器分')[2][1],
+    '馈线柜断路器合FUN': conf.items('馈线柜断路器合')[0][1],
+    '馈线柜断路器合INF': conf.items('馈线柜断路器合')[1][1],
+    '馈线柜断路器合有效值': conf.items('馈线柜断路器合')[2][1],
+    '进线柜断路器分FUN': conf.items('进线柜断路器分')[0][1],
+    '进线柜断路器分INF': conf.items('进线柜断路器分')[1][1],
+    '进线柜断路器分有效值': conf.items('进线柜断路器分')[2][1],
+    '进线柜断路器合FUN': conf.items('进线柜断路器合')[0][1],
+    '进线柜断路器合INF': conf.items('进线柜断路器合')[1][1],
+    '进线柜断路器合有效值': conf.items('进线柜断路器合')[2][1],
+}
+date_type = {
+    1: '带时标的报文',
+    2: '具有相对时间的带时标报文',
+    3: '被测值I',
+    4: '具有相对时间的带时标的被测值',
+    5: '标识',
+    6: '时间同步',
+    7: '总召唤',
+    8: '总召唤终止',
+    9: '被测值II',
+    10: '通用分类数据',
+    11: '通用标识',
+    20: '一般命令',
+    21: '通用命令',
+    23: '被记录的扰动表',
+    24: '扰动数据传输的命令',
+    25: '扰动数据传输的认可',
+    26: '准备传送扰动数据',
+    27: '准备传送一个通道',
+    28: '准备传送带标志的状态变位',
+    29: '传送带标志的状态变位',
+    30: '传送扰动值',
+    31: '传送结束',
+}
 slave2master_function = {0: '确认',
                          1: '链路忙，未收到报文',
                          8: '以数据包响应请求帧',
@@ -84,7 +125,10 @@ def asdu_analysis(asdu_message: str, control_message: str):
     content_asdu = ''
     asdu = re.sub(re.compile(r'\s'), '', asdu_message)
     asdu_type = asdu[0:2]
-    content_asdu += '<br>' + asdu_type + '&nbsp;&nbsp;ASDU类型标识:' + str(int(asdu_type, 16)) + '<br>'
+    if int(asdu_type, 16) in date_type.keys():
+        content_asdu += '<br>' + asdu_type + '&nbsp;&nbsp;ASDU类型标识:' + date_type[int(asdu_type, 16)] + '<br>'
+    else:
+        content_asdu += '<br>' + asdu_type + '&nbsp;&nbsp;ASDU类型标识:未知标识(' + str(int(asdu_type, 16)) + ')<br>'
     asdu_vsq = str('{:08b}'.format(int(asdu[2:4], 16)))
     if int(asdu_vsq[0]):
         content_asdu += asdu[
@@ -101,14 +145,27 @@ def asdu_analysis(asdu_message: str, control_message: str):
     content_asdu += asdu[6:8] + '&nbsp;&nbsp;应用服务数据单元公共地址:' + str(int(asdu[6:8], 16)) + '<br>'
     content_asdu += asdu[8:10] + '&nbsp;&nbsp;功能类型:' + str(int(asdu[8:10], 16)) + '<br>'
     content_asdu += asdu[10:12] + '&nbsp;&nbsp;信息序号:' + str(int(asdu[10:12], 16)) + '<br>'
-    if (asdu[8:10] == 'F0') & (asdu[10:12] == 'A0') & (asdu[12:14] == '02'):
-        content_asdu += asdu[12:] + '&nbsp;断路器合闸控制'
-    elif (asdu[8:10] == 'F0') & (asdu[10:12] == 'A0') & (asdu[12:14] == '01'):
-        content_asdu += asdu[12:] + '&nbsp;断路器分闸控制'
-    else:
-        content_asdu += asdu[12:] + '&nbsp;&nbsp;信息内容:?'
+    if (asdu[8:10] == control_dict['馈线柜断路器分FUN']) & (asdu[10:12] == control_dict['馈线柜断路器分INF']) & (
+            asdu[12:14] == control_dict['馈线柜断路器分有效值']):
+        content_asdu += asdu[12:14] + '&nbsp;馈线柜断路器分闸控制'
+    elif (asdu[8:10] == control_dict['馈线柜断路器合FUN']) & (asdu[10:12] == control_dict['馈线柜断路器合INF']) & (
+            asdu[12:14] == ['馈线柜断路器合有效值']):
+        content_asdu += asdu[12:14] + '&nbsp;馈线柜断路器合闸控制'
+    elif (asdu[8:10] == control_dict['进线柜断路器分FUN']) & (asdu[10:12] == control_dict['进线柜断路器分INF']) & (
+            asdu[12:14] == ['进线柜断路器分有效值']):
+        content_asdu += asdu[12:14] + '&nbsp;进线柜断路器分闸控制'
+    elif (asdu[8:10] == control_dict['进线柜断路器合FUN']) & (asdu[10:12] == control_dict['进线柜断路器合INF']) & (
+            asdu[12:14] == ['进线柜断路器合有效值']):
+        content_asdu += asdu[12:14] + '&nbsp;进线柜断路器合闸控制'
+    if int(asdu_type, 16) == 1:
+        """处理带时标的报文"""
+        content_asdu += asdu[14:16] + '&nbsp;&nbsp;毫秒(低):' + str(int(asdu[14:16], 16) / 1000)
+        content_asdu += asdu[16:18] + '&nbsp;&nbsp;毫秒(高):' + str(int(asdu[16:18], 16) / 1000)
+        content_asdu += asdu[18:20] + '&nbsp;&nbsp;分钟:' + str(int(asdu[18:20], 16))
+        content_asdu += asdu[20:22] + '&nbsp;&nbsp;小时:' + str(int(asdu[20:22], 16))
+        content_asdu += asdu[22:24] + '&nbsp;&nbsp;附加信息SIN:' + str(int(asdu[22:24], 16))
     # TODO
-    # 带时标的未完成
+    # 其他类型未在PSCADA看到，暂不分析
 
     return content_asdu
 
