@@ -147,23 +147,22 @@ def asdu_analysis(asdu_message: str, control_message: str):
     content_asdu += asdu[10:12] + '&nbsp;&nbsp;信息序号:' + str(int(asdu[10:12], 16)) + '<br>'
     if (asdu[8:10] == control_dict['馈线柜断路器分FUN']) & (asdu[10:12] == control_dict['馈线柜断路器分INF']) & (
             asdu[12:14] == control_dict['馈线柜断路器分有效值']):
-        content_asdu += asdu[12:14] + '&nbsp;馈线柜断路器分闸控制'
+        content_asdu += asdu[12:14] + '&nbsp;&nbsp;馈线柜断路器分闸控制'
     elif (asdu[8:10] == control_dict['馈线柜断路器合FUN']) & (asdu[10:12] == control_dict['馈线柜断路器合INF']) & (
             asdu[12:14] == ['馈线柜断路器合有效值']):
-        content_asdu += asdu[12:14] + '&nbsp;馈线柜断路器合闸控制'
+        content_asdu += asdu[12:14] + '&nbsp;&nbsp;馈线柜断路器合闸控制'
     elif (asdu[8:10] == control_dict['进线柜断路器分FUN']) & (asdu[10:12] == control_dict['进线柜断路器分INF']) & (
             asdu[12:14] == ['进线柜断路器分有效值']):
-        content_asdu += asdu[12:14] + '&nbsp;进线柜断路器分闸控制'
+        content_asdu += asdu[12:14] + '&nbsp;&nbsp;进线柜断路器分闸控制'
     elif (asdu[8:10] == control_dict['进线柜断路器合FUN']) & (asdu[10:12] == control_dict['进线柜断路器合INF']) & (
             asdu[12:14] == ['进线柜断路器合有效值']):
-        content_asdu += asdu[12:14] + '&nbsp;进线柜断路器合闸控制'
+        content_asdu += asdu[12:14] + '&nbsp;&nbsp;进线柜断路器合闸控制'
     if int(asdu_type, 16) == 1:
         """处理带时标的报文"""
-        content_asdu += asdu[14:16] + '&nbsp;&nbsp;毫秒(低):' + str(int(asdu[14:16], 16) / 1000)
-        content_asdu += asdu[16:18] + '&nbsp;&nbsp;毫秒(高):' + str(int(asdu[16:18], 16) / 1000)
-        content_asdu += asdu[18:20] + '&nbsp;&nbsp;分钟:' + str(int(asdu[18:20], 16))
-        content_asdu += asdu[20:22] + '&nbsp;&nbsp;小时:' + str(int(asdu[20:22], 16))
-        content_asdu += asdu[22:24] + '&nbsp;&nbsp;附加信息SIN:' + str(int(asdu[22:24], 16))
+        content_asdu += '<br>' + asdu[14:18] + '&nbsp;秒:' + str(int(asdu[16:18] + asdu[14:16], 16) / 1000)
+        content_asdu += '<br>' + asdu[18:20] + '&nbsp;&nbsp;分钟:' + str(int(asdu[18:20], 16))
+        content_asdu += '<br>' + asdu[20:22] + '&nbsp;&nbsp;小时:' + str(int(asdu[20:22], 16))
+        content_asdu += '<br>' + asdu[22:24] + '&nbsp;&nbsp;附加信息SIN:' + str(int(asdu[22:24], 16))
     # TODO
     # 其他类型未在PSCADA看到，暂不分析
 
