@@ -46,6 +46,7 @@ class File_copy(QtCore.QThread):
 class Msg_als(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+        self.is_feeder = True
         self.feedwin = FeedBack()
         self.setting = Setting()
         self.login = Login()
@@ -248,6 +249,7 @@ class Msg_als(QtWidgets.QMainWindow):
         QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
 
     def style_incoming(self):
+        self.is_feeder = False
         """进线柜界面"""
         self.statusbar_label.setText('当前模式: 进线柜')
         self.statusbar.showMessage('请打开进线柜日志文件')
@@ -487,6 +489,10 @@ class Msg_als(QtWidgets.QMainWindow):
         content_msg = re.search(pattern_date, file_opened)
         src = content_msg['content'].strip()
         # 在时间段中查找216记录
+        if self.is_feeder:  # TODO
+            match_str = r'TX-.+?F0 A0 .+?'
+        else:
+            match_str = r'TX-.+?F0 A0 .+?'
         search_result = []
         pre_signal1 = False
         pre_signal2 = False
@@ -567,7 +573,11 @@ class Msg_als(QtWidgets.QMainWindow):
 
     def execute(self):
         message = self.display_source.toPlainText().strip()
-        temp_result = analysis(message)
+        temp_result = None
+        try:
+            temp_result = analysis(message)
+        except Exception as e:
+            self.statusbar.showMessage('报文格式不完整！')
         self.display_result.setHtml(temp_result[0])
         for m in temp_result[1].keys():
             self.display_result.append(

@@ -1,7 +1,7 @@
 """IEC103规约分析"""
 import collections
-import re
 import configparser
+import re
 
 conf = configparser.ConfigParser()
 conf.read('configure.ini', 'utf-8')
