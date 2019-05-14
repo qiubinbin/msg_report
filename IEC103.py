@@ -149,13 +149,13 @@ def asdu_analysis(asdu_message: str, control_message: str):
             asdu[12:14] == control_dict['馈线柜断路器分有效值']):  # F0 A0 01
         content_asdu += asdu[12:14] + '&nbsp;&nbsp;馈线柜断路器分闸'
     elif (asdu[8:10] == control_dict['馈线柜断路器合FUN']) & (asdu[10:12] == control_dict['馈线柜断路器合INF']) & (
-            asdu[12:14] == ['馈线柜断路器合有效值']):  # F0 A0 02
+            asdu[12:14] == control_dict['馈线柜断路器合有效值']):  # F0 A0 02
         content_asdu += asdu[12:14] + '&nbsp;&nbsp;馈线柜断路器合闸'
     elif (asdu[8:10] == control_dict['进线柜断路器分FUN']) & (asdu[10:12] == control_dict['进线柜断路器分INF']) & (
-            asdu[12:14] == ['进线柜断路器分有效值']):  # B2 46 02
+            asdu[12:14] == control_dict['进线柜断路器分有效值']):  # B2 46 02
         content_asdu += asdu[12:14] + '&nbsp;&nbsp;进线柜断路器分闸'
     elif (asdu[8:10] == control_dict['进线柜断路器合FUN']) & (asdu[10:12] == control_dict['进线柜断路器合INF']) & (
-            asdu[12:14] == ['进线柜断路器合有效值']):  # B2 47 02
+            asdu[12:14] == control_dict['进线柜断路器合有效值']):  # B2 47 02
         content_asdu += asdu[12:14] + '&nbsp;&nbsp;进线柜断路器合闸'
     if int(asdu_type, 16) == 1:
         """处理带时标的报文"""
@@ -165,7 +165,7 @@ def asdu_analysis(asdu_message: str, control_message: str):
         content_asdu += '<br>' + asdu[22:24] + '&nbsp;&nbsp;附加信息SIN:' + str(int(asdu[22:24], 16))
     # TODO
     # 其他类型未在PSCADA看到，暂不分析
-
+    print('zheli' + content_asdu)
     return content_asdu
 
 
@@ -206,3 +206,4 @@ if __name__ == '__main__':
     text = """68 0E 0E 68 28 09 01 81 09 09 F0 A0 02 C4 0E 2B 04 00 58 16"""
     # temp = analysis(text)
     print(control_dict)
+    print(analysis(text))
