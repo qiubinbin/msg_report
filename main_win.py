@@ -60,6 +60,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.action_save.triggered.connect(self.save_file)
         self.action_open_remote.triggered.connect(self.remote)
         self.action_setting.triggered.connect(self.setting.show)
+        self.action_feedback.triggered.connect(self.feedwin.show)
         self.feeder_cabin.triggered.connect(self.style_feeder)
         self.incoming_cabinet_201_202.triggered.connect(self.style_incoming)
         self.pushButton_note.clicked.connect(self.open_edit)
@@ -82,6 +83,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.action_open_remote = QtWidgets.QAction(qtawesome.icon('fa.exchange', color="black"), '远程')
         self.action_open_remote.setShortcut('Ctrl+R')
         self.action_about = QtWidgets.QAction('关于')
+        self.action_feedback = QtWidgets.QAction('反馈')
         self.incoming_cabinet_201_202 = QtWidgets.QAction(qtawesome.icon('fa.share'), '进线柜')
         self.feeder_cabin = QtWidgets.QAction(qtawesome.icon('fa.share'), '馈线柜')
         self.menubar = self.menuBar()
@@ -93,6 +95,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.menu_H = self.menubar.addMenu('帮助')
         self.action_setting = QtWidgets.QAction(qtawesome.icon('fa.cog', color='black'), '设置')
         self.menu_H.addAction(self.action_about)
+        self.menu_H.addAction(self.action_feedback)
         self.menu_H.addAction(self.action_setting)
         self.protocol_103 = self.menu_P.addMenu(qtawesome.icon('fa.file-word-o', color='black'), '103协议')
         self.protocol_103.addAction(self.incoming_cabinet_201_202)
@@ -138,7 +141,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.main_layout = QtWidgets.QGridLayout()
         self.main_widget.setLayout(self.main_layout)
         """左窗口"""
-        self.left_widget = QtWidgets.QFrame()
+        self.left_widget = QtWidgets.QWidget()
         self.left_widget.setObjectName('left_widget')
         self.left_layout = QtWidgets.QVBoxLayout()
         self.left_widget.setLayout(self.left_layout)
@@ -211,7 +214,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.left_layout.addWidget(self.pushButton_search, 6)
         self.left_layout.addWidget(self.pushButton_note, 7)
         self.left_layout.addWidget(self.pushButton_save, 8)
-        self.left_layout.addWidget(self.pushButton_feedback, 9)
+        # self.left_layout.addWidget(self.pushButton_feedback, 9)
         """给右窗口添加部件"""
         self.right_layout.addWidget(self.display_widget, 0, 2, 10, 6)
         self.display_layout.setContentsMargins(0, 0, 0, 0)
@@ -252,12 +255,10 @@ class Msg_als(QtWidgets.QMainWindow):
         self.setWindowOpacity(0.99)  # 窗口透明度
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # 设置窗口背景透明
         self.left_widget.setStyleSheet('''
-            QFrame#left_widget{
+            QWidget#left_widget{
             background-color:qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0 rgba(132, 77, 181, 255), stop:1 rgba(102, 130, 237, 255));
-            border-top-left-radius:4px;
-            border-top-right-radius:4px;
-            border-bottom-left-radius:4px;
-            border-bottom-right-radius:4px;
+            margin-top:10;
+            margin-bottom:10;
             }
             QPushButton{
             border:none;
@@ -303,12 +304,10 @@ class Msg_als(QtWidgets.QMainWindow):
         self.setWindowOpacity(0.99)  # 窗口透明度
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # 设置窗口背景透明
         self.left_widget.setStyleSheet('''
-            QFrame#left_widget{
+            QWidget#left_widget{
             background-color:#232F3F;
-            border-top-left-radius:4px;
-            border-top-right-radius:4px;
-            border-bottom-left-radius:4px;
-            border-bottom-right-radius:4px;
+            margin-top:10;
+            margin-bottom:10;
             }
             QPushButton{
             border:none;

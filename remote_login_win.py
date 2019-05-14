@@ -71,13 +71,12 @@ class Login(QtWidgets.QFrame):
         self.pushbutton_close.setFocusPolicy(Qt.NoFocus)
         """设置样式表"""
         self.setStyleSheet('''
-        QFrame{background:#F5F5F5;}
+        QFrame{background:#FFFFFF;}
         QComboBox{font-size:11pd; color:#60607A;font-family:"Consolas";}
         QLineEdit{font-size:11pd; color:#60607A;font-family:"Consolas";}
         QSpinBox{font-size:11pd; color:#60607A;font-family:"Consolas";}
         QLineEdit#password{lineedit-password-character:9786;}
-        QPushButton#label{border:none;background:none;font-size:11pd;
-            font-weight:bold;color:#60607A;font-family:"Source Han Sans";text-align:left}''')
+        QPushButton#label{border:none;background:none;font-family:"微软雅黑";text-align:left}''')
 
     def sendsignal(self):
         """连接到服务器"""

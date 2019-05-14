@@ -92,7 +92,7 @@ class Setting(QtWidgets.QFrame):
         self.button_save.setFocusPolicy(Qt.NoFocus)
         self.button_cancle.setFocusPolicy(Qt.NoFocus)
         self.setStyleSheet('''
-            QFrame{background:#F5F5F5;}
+            QFrame{background:#FFFFFF;}
             QGroupBox{font-family:"微软雅黑";}''')
 
     def save_ini(self):

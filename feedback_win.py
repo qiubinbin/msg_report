@@ -30,6 +30,7 @@ class FeedBack(QtWidgets.QDialog):
         self.send = Button4ok('发送')
         self.send.setFixedSize(72, 23)
         self.cancel = Button4cancel('取消')
+        self.cancel.setObjectName('button1')
         self.cancel.setFixedSize(72, 23)
         self.main_layout.addWidget(self.label, 0, 0, 1, 2)
         self.main_layout.addWidget(self.content, 1, 0, 3, 4)
@@ -57,7 +58,8 @@ class FeedBack(QtWidgets.QDialog):
         border-top-right-radius:3px;
         border-bottom-left-radius:3px;
         border-bottom-right-radius:3px;}
-        QLabel{background:none;border:none;font-size:10pd;font-family:"等线"}''')
+        QLabel{background:none;border:none;font-size:10pd;font-family:"等线"}
+        QPushButton{border-radius:none}''')
         """动作"""
         self.cancel.clicked.connect(self.close)
         self.send.clicked.connect(self.savelog)
