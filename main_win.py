@@ -301,6 +301,7 @@ class Msg_als(QtWidgets.QMainWindow):
 
     def style_feeder(self):
         """馈线柜样式表"""
+        self.is_feeder = True
         self.statusbar_label.setText('当前模式: 馈线柜')
         self.statusbar.showMessage('请打开馈线柜日志文件')
         self.setWindowOpacity(0.99)  # 窗口透明度
@@ -489,47 +490,124 @@ class Msg_als(QtWidgets.QMainWindow):
         content_msg = re.search(pattern_date, file_opened)
         src = content_msg['content'].strip()
         # 在时间段中查找216记录
-        if self.is_feeder:  # TODO
-            match_str = r'TX-.+?F0 A0 .+?'
-        else:
-            match_str = r'TX-.+?F0 A0 .+?'
         search_result = []
+        """标志组"""
         pre_signal1 = False
         pre_signal2 = False
+        pre_signal3 = False
         rev_signal1 = False
         rev_signal2 = False
+        rev_signal3 = False
         temp_message = []  # 临时保存一级召唤数据
-        for line in src.split('\n'):
-            # 匹配TX(F0 A0)-RX对
-            if re.match(re.compile(r'TX-.+?F0 A0 .+?'), line):
-                pre_signal1 = True
-                search_result.append(line)
-            elif pre_signal1 & bool(re.match(re.compile(r'^\s'), line)):
-                search_result.append(line)
-            elif pre_signal1 & bool(re.match(re.compile(r'^RX'), line)):
-                search_result.append(line)
-                pre_signal1 = False
-                rev_signal1 = True
-            elif rev_signal1:
-                if re.match(re.compile(r'^\s'), line):
+        if self.is_feeder:
+            """馈线柜"""
+            for line in src.split('\n'):
+                """-------------------------遥控过程-------------------------"""
+                """匹配TX(F0 A0)-RX对"""
+                if re.match(re.compile(r'TX-.+?F0 A0 .+?'), line):
+                    pre_signal1 = True
                     search_result.append(line)
-                rev_signal1 = False
-            # 匹配一级数据召唤
-            elif re.match(re.compile(r'^TX-.+?10 \dA.+?16$'), line):
-                temp_message.append(line)
-                pre_signal2 = True
-            elif pre_signal2:
-                if re.match(re.compile(r'^RX-.+?F0 A0 .+?'), line):
-                    temp_message.append(line)
-                    rev_signal2 = True
+                elif pre_signal1 & bool(re.match(re.compile(r'^\s'), line)):
+                    search_result.append(line)
+                elif pre_signal1 & bool(re.match(re.compile(r'^RX'), line)):
+                    search_result.append(line)
+                    pre_signal1 = False
+                    rev_signal1 = True
+                elif rev_signal1 & bool(re.match(re.compile(r'^\s'), line)):
+                    search_result.append(line)
+                    rev_signal1 = False
                 else:
-                    temp_message = []  # 匹配失败，清空
-                pre_signal2 = False
-            elif rev_signal2:
-                if re.match(re.compile(r'^\s'), line):
+                    rev_signal1 = False
+                """匹配二级数据-RX召唤"""
+                if re.match(re.compile(r'^TX-.+?10 \dA.+?16'), line):
                     temp_message.append(line)
-                search_result += temp_message
-                rev_signal2 = False
+                    pre_signal2 = True
+                elif pre_signal2:
+                    if re.match(re.compile(r'^RX-.+?F0 A0 .+?'), line):
+                        temp_message.append(line)
+                        rev_signal2 = True
+                    else:
+                        temp_message.clear()  # 匹配失败，清空
+                    pre_signal2 = False
+                elif rev_signal2:
+                    if re.match(re.compile(r'^\s'), line):
+                        temp_message.append(line)
+                    search_result += temp_message
+                    temp_message.clear()
+                    rev_signal2 = False
+            """-------------------------遥信过程-------------------------"""
+            for line in src.split('\n'):
+                """断路器分或合位"""
+                if re.match(re.compile(r'^TX-.+?10 \dA.+?16'), line):
+                    temp_message.append(line)
+                    pre_signal3 = True
+                elif pre_signal3:
+                    if re.match(re.compile(r'^RX-.+?C2 1[BC] 02.+?'), line):
+                        temp_message.append(line)
+                        rev_signal3 = True
+                    else:
+                        temp_message.clear()  # 匹配失败，清空
+                    pre_signal3 = False
+                elif rev_signal3:
+                    if re.match(re.compile(r'^\s'), line):
+                        temp_message.append(line)
+                    search_result += temp_message
+                    temp_message = []
+                    rev_signal3 = False
+        else:
+            """进线柜"""
+            """-------------------------遥控过程-------------------------"""
+            for line in src.split('\n'):
+                """匹配TX(F0 A0)-RX控制对"""
+                if re.match(re.compile(r'TX-.+?B2 4[67] 02.+?'), line):
+                    pre_signal1 = True
+                    search_result.append(line)
+                elif pre_signal1 & bool(re.match(re.compile(r'^\s'), line)):
+                    search_result.append(line)
+                elif pre_signal1 & bool(re.match(re.compile(r'^RX'), line)):
+                    search_result.append(line)
+                    pre_signal1 = False
+                    rev_signal1 = True
+                elif rev_signal1 & bool(re.match(re.compile(r'^\s'), line)):
+                    search_result.append(line)
+                    rev_signal1 = False
+                else:
+                    rev_signal1 = False
+                """匹配二级数据-RX召唤"""
+                if re.match(re.compile(r'^TX-.+?10 \dA.+?16'), line):
+                    temp_message.append(line)
+                    pre_signal2 = True
+                elif pre_signal2:
+                    if re.match(re.compile(r'^RX-.+?B2 4[67] 02.+?'), line):
+                        temp_message.append(line)
+                        rev_signal2 = True
+                    else:
+                        temp_message.clear()  # 匹配失败，清空
+                    pre_signal2 = False
+                elif rev_signal2:
+                    if re.match(re.compile(r'^\s'), line):
+                        temp_message.append(line)
+                    search_result += temp_message
+                    rev_signal2 = False
+                """-------------------------遥信过程-------------------------"""
+                for line in src.split('\n'):
+                    """断路器分或合位"""
+                    if re.match(re.compile(r'^TX-.+?10 \dA.+?16'), line):
+                        temp_message.append(line)
+                        pre_signal3 = True
+                    elif pre_signal3:
+                        if re.match(re.compile(r'^RX-.+?B2 6[45] 02.+?'), line):
+                            temp_message.append(line)
+                            rev_signal3 = True
+                        else:
+                            temp_message.clear()  # 匹配失败，清空
+                        pre_signal3 = False
+                    elif rev_signal3:
+                        if re.match(re.compile(r'^\s'), line):
+                            temp_message.append(line)
+                        search_result += temp_message
+                        temp_message.clear()
+                        rev_signal3 = False
         self.display_select.setHtml(self.createhtml(search_result, date, time))
         QtWidgets.QApplication.processEvents()
         file_temp.close()
@@ -572,6 +650,7 @@ class Msg_als(QtWidgets.QMainWindow):
             self.statusbar.showMessage("已关闭编辑", msecs=200)
 
     def execute(self):
+        """不用区分进线柜或者馈线柜"""
         message = self.display_source.toPlainText().strip()
         temp_result = None
         try:
