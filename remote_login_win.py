@@ -6,7 +6,7 @@ from PyQt5.QtCore import QRegExp, pyqtSignal, Qt
 from override import LineEdit, Button4ok, Button4cancel
 
 
-class Login(QtWidgets.QFrame):
+class Login(QtWidgets.QDialog):
     # 自定义信号
     mySignal = pyqtSignal(dict)
 
@@ -15,7 +15,8 @@ class Login(QtWidgets.QFrame):
         self.initui()
         self.setWindowTitle('登录')
         self.setWindowIcon(qtawesome.icon('fa.sign-in', color='#ff5959'))
-        # self.setWindowOpacity(0.95)  # 窗口透明度
+        self.setWindowModality(Qt.ApplicationModal)  # 对话窗口置顶
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)  # 去除不必要的按钮
         self.setFixedSize(294, 241)
 
     def initui(self):
@@ -71,7 +72,7 @@ class Login(QtWidgets.QFrame):
         self.pushbutton_close.setFocusPolicy(Qt.NoFocus)
         """设置样式表"""
         self.setStyleSheet('''
-        QFrame{background:#FFFFFF;}
+        QDialog{background:#FFFFFF;}
         QComboBox{font-size:11pd; color:#60607A;font-family:"Consolas";}
         QLineEdit{font-size:11pd; color:#60607A;font-family:"Consolas";}
         QSpinBox{font-size:11pd; color:#60607A;font-family:"Consolas";}

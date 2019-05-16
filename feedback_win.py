@@ -15,6 +15,8 @@ class FeedBack(QtWidgets.QDialog):
         self.setFixedSize(325, 215)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
+        self.setWindowModality(Qt.ApplicationModal)  # 对话窗口置顶
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)  # 去除不必要的按钮
         self.mPos = None
 
     def init_ui(self):

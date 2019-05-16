@@ -8,12 +8,14 @@ from PyQt5.QtCore import Qt
 from override import LineEdit1, Button4Setting, Button4ok, Button4cancel
 
 
-class Setting(QtWidgets.QFrame):
+class Setting(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
         self.initui()
         self.setWindowTitle('设置')
         self.setWindowIcon(qtawesome.icon('fa.cog', color='pink'))
+        self.setWindowModality(Qt.ApplicationModal)  # 对话窗口置顶
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)  # 去除不必要的按钮
         self.showini()
 
     def initui(self):
@@ -146,10 +148,20 @@ class Setting(QtWidgets.QFrame):
         self.group2_button_up1.setFocusPolicy(Qt.NoFocus)
         self.group2_button_up2.setFocusPolicy(Qt.NoFocus)
         self.group2_button_up3.setFocusPolicy(Qt.NoFocus)
+        self.group3_button_left1.setFocusPolicy(Qt.NoFocus)
+        self.group3_button_left2.setFocusPolicy(Qt.NoFocus)
+        self.group3_button_up1.setFocusPolicy(Qt.NoFocus)
+        self.group3_button_up2.setFocusPolicy(Qt.NoFocus)
+        self.group3_button_up3.setFocusPolicy(Qt.NoFocus)
+        self.group4_button_left1.setFocusPolicy(Qt.NoFocus)
+        self.group4_button_left2.setFocusPolicy(Qt.NoFocus)
+        self.group4_button_up1.setFocusPolicy(Qt.NoFocus)
+        self.group4_button_up2.setFocusPolicy(Qt.NoFocus)
+        self.group4_button_up3.setFocusPolicy(Qt.NoFocus)
         self.button_save.setFocusPolicy(Qt.NoFocus)
         self.button_cancle.setFocusPolicy(Qt.NoFocus)
         self.setStyleSheet('''
-            QFrame{background:#FFFFFF;}
+            QDialog{background:#FFFFFF;}
             QGroupBox{font-family:"微软雅黑";}''')
 
     def save_ini(self):
@@ -181,6 +193,7 @@ class Setting(QtWidgets.QFrame):
         conf.set('进线柜断路器合-遥信', 'INF', self.group4_line22.text())
         conf.set('进线柜断路器合-遥信', '有效值', self.group4_line23.text())
         conf.write(open('configure.ini', 'r+', encoding='utf-8'))
+        self.parent().setWindowModality(Qt.ApplicationModal)
 
     def showini(self):
         conf = configparser.ConfigParser()

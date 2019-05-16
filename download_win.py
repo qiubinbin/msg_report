@@ -7,12 +7,14 @@ from PyQt5.QtCore import pyqtSignal, Qt
 from override import Button4ok, Button4cancel
 
 
-class OpenTip(QtWidgets.QFrame):
+class OpenTip(QtWidgets.QDialog):
     mySignal = pyqtSignal(bool)
 
     def __init__(self):
         super().__init__()
         self.initui()
+        self.setWindowModality(Qt.ApplicationModal)  # 对话窗口置顶
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)  # 去除不必要的按钮
 
     def initui(self):
         self.setWindowIcon(qtawesome.icon('fa.exclamation-circle', color='red'))
@@ -29,7 +31,7 @@ class OpenTip(QtWidgets.QFrame):
         self.button_cancle.clicked.connect(self.cancle)
         self.button_open.clicked.connect(self.openfile)
         self.setStyleSheet('''
-        QFrame{background:#FFFFFF;}''')
+        QDialog{background:#FFFFFF;}''')
 
     def cancle(self):
         self.close()
@@ -40,7 +42,7 @@ class OpenTip(QtWidgets.QFrame):
         self.mySignal.emit(True)
 
 
-class File_dowload(QtWidgets.QFrame):
+class File_dowload(QtWidgets.QDialog):
     mySignal = pyqtSignal(str)
 
     def __init__(self, remote_path=None, filelist=[], transport=None, statusbar=None):
@@ -50,6 +52,8 @@ class File_dowload(QtWidgets.QFrame):
         self.filelist = filelist
         self.transport = transport
         self.statusbar = statusbar
+        self.setWindowModality(Qt.ApplicationModal)  # 对话窗口置顶
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)  # 去除不必要的按钮
         self.initui()
 
     def initui(self):
@@ -74,7 +78,7 @@ class File_dowload(QtWidgets.QFrame):
         self.button_cancel.setFocusPolicy(Qt.NoFocus)
         """设置样式表"""
         self.setStyleSheet('''
-                QFrame{background:#FFFFFF;}
+                QDialog{background:#FFFFFF;}
                 QPushButton#label{border:none;background:none;font-family:"Source Han Sans";font-size:11pd;font-weight:487;text-align:left}''')
 
     def dowload(self):

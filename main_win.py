@@ -9,7 +9,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFont
 
 from IEC103 import analysis
-from dowload_win import File_dowload, OpenTip
+from download_win import File_dowload, OpenTip
 from feedback_win import FeedBack
 from override import TextView, Button4Icon
 from remote_login_win import Login
