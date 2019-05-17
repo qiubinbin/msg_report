@@ -53,8 +53,8 @@ class Msg_als(QtWidgets.QMainWindow):
         self.common_init()
         self.style_feeder()
         self.init_action_connect()
-        self.setWindowIcon(QtGui.QIcon('icon/图标.svg'))
-        self.setWindowTitle('报文')
+        self.setWindowIcon(QtGui.QIcon('icon/main_win.svg'))
+        self.setWindowTitle('Message')
 
     def init_action_connect(self):
         self.action_open.triggered.connect(self.open_file)
