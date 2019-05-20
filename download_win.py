@@ -47,7 +47,7 @@ class File_dowload(QtWidgets.QDialog):
 
     def __init__(self, remote_path=None, filelist=[], transport=None, statusbar=None):
         super().__init__()
-        self.localpath = r'C:/Users/qiubi/Desktop/'
+        self.localpath = r'C:/'
         self.remote_path = remote_path
         self.filelist = filelist
         self.transport = transport

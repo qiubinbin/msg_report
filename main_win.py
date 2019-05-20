@@ -14,6 +14,7 @@ from feedback_win import FeedBack
 from override import TextView, Button4Icon
 from remote_login_win import Login
 from setting_win import Setting
+import configparser
 
 
 class File_copy(QtCore.QThread):
@@ -23,7 +24,9 @@ class File_copy(QtCore.QThread):
         super().__init__()
         self.connect = connect
         self.statusbar = statusbar
-        self.remote_path = r'/etc/apm/event.d/'  # 远程服务器日志文件夹地址
+        conf = configparser.ConfigParser()
+        conf.read('configure.ini', 'utf-8')
+        self.remote_path = conf.items('远程服务器地址', 'utf-8')[0][1]  # 远程服务器日志文件夹地址
         self.content = dict()
 
     def run(self):
@@ -67,7 +70,6 @@ class Msg_als(QtWidgets.QMainWindow):
         self.pushButton_note.clicked.connect(self.open_edit)
         self.pushButton_save.clicked.connect(self.save_file)
         self.pushButton_search.clicked.connect(self.search)
-        self.pushButton_feedback.clicked.connect(self.feedwin.show)
         self.comboBox_date1.currentIndexChanged.connect(self.change_timelist_1)
         self.comboBox_time1.currentIndexChanged.connect(self.change_datelist_2)
         self.comboBox_date2.currentIndexChanged.connect(self.change_timelist_2)
@@ -81,7 +83,7 @@ class Msg_als(QtWidgets.QMainWindow):
         self.action_open.setShortcut('Ctrl+O')
         self.action_save = QtWidgets.QAction(qtawesome.icon('fa.save', color="black"), '保存(S)')
         self.action_save.setShortcut('Ctrl+S')
-        self.action_open_remote = QtWidgets.QAction(qtawesome.icon('fa.exchange', color="black"), '远程')
+        self.action_open_remote = QtWidgets.QAction(qtawesome.icon('fa.ravelry', color="black"), '远程')
         self.action_open_remote.setShortcut('Ctrl+R')
         self.action_about = QtWidgets.QAction('关于')
         self.action_feedback = QtWidgets.QAction('反馈')
@@ -156,14 +158,12 @@ class Msg_als(QtWidgets.QMainWindow):
         self.main_layout.addWidget(self.right_widget, 0, 2, 10, 10)  # 10行10列
         self.setCentralWidget(self.main_widget)
         """设置部件"""
-        self.pushButton_search = QtWidgets.QPushButton(qtawesome.icon('fa.search', color='white'), "搜索")
+        self.pushButton_search = QtWidgets.QPushButton(qtawesome.icon('fa.search', color='#76a21e'), "搜索")
         self.pushButton_search.setObjectName('left_button')
-        self.pushButton_note = QtWidgets.QPushButton(qtawesome.icon('fa.pencil-square-o', color='white'), "笔记")
+        self.pushButton_note = QtWidgets.QPushButton(qtawesome.icon('fa.pencil', color='#b206b0'), "笔记")
         self.pushButton_note.setObjectName('left_button')
-        self.pushButton_save = QtWidgets.QPushButton(qtawesome.icon('fa.save', color='white'), "保存")
+        self.pushButton_save = QtWidgets.QPushButton(qtawesome.icon('fa5s.save', color='#9764c7'), "保存")
         self.pushButton_save.setObjectName('left_button')
-        self.pushButton_feedback = QtWidgets.QPushButton(qtawesome.icon('fa.comments', color='white'), "反馈")
-        self.pushButton_feedback.setObjectName('left_button')
         self.begin_label = QtWidgets.QPushButton('开始时间')
         self.begin_label.setObjectName('left_label')
         self.end_label = QtWidgets.QPushButton('结束时间')
