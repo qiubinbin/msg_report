@@ -158,11 +158,11 @@ class Msg_als(QtWidgets.QMainWindow):
         self.main_layout.addWidget(self.right_widget, 0, 2, 10, 10)  # 10行10列
         self.setCentralWidget(self.main_widget)
         """设置部件"""
-        self.pushButton_search = QtWidgets.QPushButton(qtawesome.icon('fa.search', color='#76a21e'), "搜索")
+        self.pushButton_search = QtWidgets.QPushButton(qtawesome.icon('fa.search', color='white'), "搜索")
         self.pushButton_search.setObjectName('left_button')
-        self.pushButton_note = QtWidgets.QPushButton(qtawesome.icon('fa.pencil', color='#b206b0'), "笔记")
+        self.pushButton_note = QtWidgets.QPushButton(qtawesome.icon('fa.pencil', color='white'), "笔记")
         self.pushButton_note.setObjectName('left_button')
-        self.pushButton_save = QtWidgets.QPushButton(qtawesome.icon('fa5s.save', color='#9764c7'), "保存")
+        self.pushButton_save = QtWidgets.QPushButton(qtawesome.icon('fa5s.save', color='white'), "保存")
         self.pushButton_save.setObjectName('left_button')
         self.begin_label = QtWidgets.QPushButton('开始时间')
         self.begin_label.setObjectName('left_label')
