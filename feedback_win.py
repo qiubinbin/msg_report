@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 from override import TextView, Button4ok, Button4cancel
 
 
-class FeedBack(QtWidgets.QDialog):
+class FeedBack(QtWidgets.QFrame):
     def __init__(self):
         super().__init__()
         self.init_ui()
@@ -16,7 +16,6 @@ class FeedBack(QtWidgets.QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setWindowModality(Qt.ApplicationModal)  # 对话窗口置顶
-        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)  # 去除不必要的按钮
         self.mPos = None
 
     def init_ui(self):
