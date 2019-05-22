@@ -16,7 +16,7 @@ class Login(QtWidgets.QDialog):
         self.setWindowTitle('登录')
         self.setWindowIcon(qtawesome.icon('fa.sign-in', color='#ff5959'))
         self.setWindowModality(Qt.ApplicationModal)  # 对话窗口置顶
-        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)  # 去除不必要的按钮
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)  # 去除不必要的按钮，仅QDialog
         self.setFixedSize(294, 241)
 
     def initui(self):
