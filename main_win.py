@@ -1,5 +1,6 @@
 """主窗口"""
 import collections
+import configparser
 import re
 
 import paramiko
@@ -14,7 +15,6 @@ from feedback_win import FeedBack
 from override import TextView, Button4Icon
 from remote_login_win import Login
 from setting_win import Setting
-import configparser
 
 
 class File_copy(QtCore.QThread):
@@ -392,7 +392,7 @@ class Msg_als(QtWidgets.QMainWindow):
         else:
             file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', 'C:\\Users\\qiubi\\Desktop',
                                                             'Text Files (*.txt)')
-        self.statusbar.showMessage("已打开 " + file, msecs=20)
+        self.statusbar.showMessage("已打开 " + file)
         pattern_date = re.compile(
             r'(?P<date1>2019-\d+-\d+) (?P<date2>\d{2}:\d{2}:\d{2})')
         try:
