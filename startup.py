@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, QtGui
 from main_win import Msg_als
 
 app = QtWidgets.QApplication(sys.argv)
-splash = QtWidgets.QSplashScreen(QtGui.QPixmap('icon/ml.bmp'))
+splash = QtWidgets.QSplashScreen(QtGui.QPixmap('icon/ml.svg'))  # 使用bmp无法使用α通道
 splash.show()
 QtWidgets.qApp.processEvents()
 win = Msg_als()

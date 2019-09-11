@@ -158,16 +158,15 @@ class Msg_als(QtWidgets.QMainWindow):
         self.main_layout.addWidget(self.right_widget, 0, 2, 10, 10)  # 10行10列
         self.setCentralWidget(self.main_widget)
         """设置部件"""
-        self.pushButton_search = QtWidgets.QPushButton(qtawesome.icon('fa.search', color='white'), "搜索")
-        self.pushButton_search.setObjectName('left_button')
+        self.pushButton_search = QtWidgets.QPushButton(qtawesome.icon('fa.search', color='white',), "搜索")
+        self.pushButton_search.setObjectName('left_button_search')
         self.pushButton_note = QtWidgets.QPushButton(qtawesome.icon('fa.pencil', color='white'), "笔记")
-        self.pushButton_note.setObjectName('left_button')
+        self.pushButton_note.setObjectName('left_button_note')
         self.pushButton_save = QtWidgets.QPushButton(qtawesome.icon('fa5s.save', color='white'), "保存")
-        self.pushButton_save.setObjectName('left_button')
-        self.begin_label = QtWidgets.QPushButton('开始时间')
-        self.begin_label.setObjectName('left_label')
-        self.end_label = QtWidgets.QPushButton('结束时间')
-        self.end_label.setObjectName('left_label')
+        self.pushButton_save.setObjectName('left_button_save')
+        # self.begin_label.setObjectName('left_label')
+        # self.end_label = QtWidgets.QGroupBox('结束时间')
+        # self.end_label.setObjectName('left_label')
         self.display_select = TextView()
         self.display_select.setFont(QFont("Consolas", 8))
         self.display_select.setReadOnly(True)
@@ -175,10 +174,20 @@ class Msg_als(QtWidgets.QMainWindow):
         self.comboBox_date1.setObjectName('left_combobox')
         self.comboBox_time1 = QtWidgets.QComboBox()
         self.comboBox_time1.setObjectName('left_combobox')
+        self.begin_label = QtWidgets.QGroupBox('开始时间')
+        self.begin_label_layout = QtWidgets.QVBoxLayout()
+        self.begin_label.setLayout(self.begin_label_layout)
+        self.begin_label_layout.addWidget(self.comboBox_date1,0)
+        self.begin_label_layout.addWidget(self.comboBox_time1,1)
         self.comboBox_date2 = QtWidgets.QComboBox()
         self.comboBox_date2.setObjectName('left_combobox')
         self.comboBox_time2 = QtWidgets.QComboBox()
         self.comboBox_time2.setObjectName('left_combobox')
+        self.end_label = QtWidgets.QGroupBox('结束时间')
+        self.end_label_layout = QtWidgets.QVBoxLayout()
+        self.end_label.setLayout(self.end_label_layout)
+        self.end_label_layout.addWidget(self.comboBox_date2, 0)
+        self.end_label_layout.addWidget(self.comboBox_time2, 1)
         self.display_widget = QtWidgets.QFrame()
         self.display_widget.setObjectName('display_widget')
         self.display_layout = QtWidgets.QGridLayout()
@@ -206,12 +215,14 @@ class Msg_als(QtWidgets.QMainWindow):
         self.display_result.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.display_result.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
         """给左窗口添加部件"""
-        self.left_layout.addWidget(self.begin_label, 0)
-        self.left_layout.addWidget(self.comboBox_date1, 1)
-        self.left_layout.addWidget(self.comboBox_time1, 2)
+        # self.left_layout.addWidget(self.begin_label, 0)
+        # self.left_layout.addWidget(self.comboBox_date1, 1)
+        # self.left_layout.addWidget(self.comboBox_time1, 2)
+        self.left_layout.addWidget(self.begin_label,0)
         self.left_layout.addWidget(self.end_label, 3)
-        self.left_layout.addWidget(self.comboBox_date2, 4)
-        self.left_layout.addWidget(self.comboBox_time2, 5)
+        self.left_layout.addStretch(6)
+        # self.left_layout.addWidget(self.comboBox_date2, 4)
+        # self.left_layout.addWidget(self.comboBox_time2, 5)
         self.left_layout.addWidget(self.pushButton_search, 6)
         self.left_layout.addWidget(self.pushButton_note, 7)
         self.left_layout.addWidget(self.pushButton_save, 8)
@@ -308,28 +319,59 @@ class Msg_als(QtWidgets.QMainWindow):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # 设置窗口背景透明
         self.left_widget.setStyleSheet('''
             QWidget#left_widget{
-            background-color:#232F3F;
+            background-color:#FFFFFF;
             margin-top:10;
-            margin-bottom:10;
-            }
+            margin-bottom:10;}
+            QGroupBox{
+            background-color:#F3F2F8;
+            border-radius: 8px;
+            height:100px;
+            font-family:"微软雅黑";}
             QPushButton{
             border:none;
             background-color:none;
-            color:#F49900;}
+            color:#000000;}
             QPushButton#left_label{
             border:none;
             border-bottom:2px solid white;
             font-size:18px;
             font-weight:700;
-            font-family:"等线"}
-            QPushButton#left_button:hover{
-            border-left:4px solid #e2598b;
-            font-weight:700}
+            font-family:"黑体";}
+            QPushButton#left_button_search{
+            background-color:#52A088;
+            color:#FFFFFF;
+            font-family:"STHeiti-Light";
+            font-weight:700;
+            border-radius: 8px;
+            height:30px;}
+            QPushButton#left_button_search:hover{
+            background-color:#437868;}
+            QPushButton#left_button_note{
+            background-color:#8C72BC;
+            color:#FFFFFF;
+            font-family:"STHeiti-Light";
+            font-weight:700;
+            border-radius: 8px;
+            height:30px;}
+            QPushButton#left_button_note:hover{
+            background-color:#756397;}
+            QPushButton#left_button_save{
+            background-color:#E5676B;
+            color:#FFFFFF;
+            font-family:"STHeiti-Light";
+            font-weight:700;
+            border-radius: 8px;
+            height:30px;}
+            QPushButton#left_button_save:hover{
+            background-color:#C05D60;}
             QComboBox#left_combobox{
+            font-family:"STHeiti-Light";
             border: 1px solid gray;
             border-radius: 1px;
             padding: 1px 18px 1px 3px;
             border-color: darkgray;}
+            QComboBox#left_combobox{
+            font-family:"Consolas";}
             QComboBox#left_combobox::down-arrow{image:url(icon/arrow2_feeder.svg);}
             QComboBox#left_combobox::drop-down{
             subcontrol-origin: padding;
