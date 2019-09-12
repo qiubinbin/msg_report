@@ -2,3 +2,4 @@
 qtawesome图标检索：http://www.fontawesome.com.cn/faicons/
 美化教程：https://www.codercto.com/a/24461.html
 QSS教程：QSS样式表（带书签）
+AI保留轮廓

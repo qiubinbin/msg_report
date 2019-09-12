@@ -18,7 +18,7 @@ class Button4Icon(QtWidgets.QPushButton):
     def enterEvent(self, a0: QtCore.QEvent):
         """复写鼠标进入事件"""
         if self.enterEvent:
-            self.setIcon(qtawesome.icon(self.btn_icon, color='#e2598b'))
+            self.setIcon(qtawesome.icon(self.btn_icon, color='#01d28e'))
 
     def leaveEvent(self, a0: QtCore.QEvent):
         """复写鼠标离开事件"""
@@ -55,7 +55,7 @@ class TextView(QtWidgets.QTextEdit):
     def initui(self):
         self.verticalScrollBar().setStyleSheet('''
                 QScrollBar:vertical{padding-top:18px;padding-bottom:18px;
-                background:#243040;color:#F49900;}
+                background-color:white;}
                 QScrollBar:handle:vertical{border:none}
                 QScrollBar:add-line:vertical{height:17px;color:#F49900;background:#243040;}
                 QScrollBar:sub-line:vertical{height:17px;color:#F49900;background:#243040;}
