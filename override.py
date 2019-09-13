@@ -8,24 +8,24 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from button_beautify import AnimationShadowEffect
 
 
-class web(QtWidgets.QFrame):
+class WebView(QtWidgets.QFrame):
     def __init__(self):
         super().__init__()
         self.bw = QWebEngineView()
         self.layout = QtWidgets.QGridLayout()
         self.setLayout(self.layout)
         self.layout.addWidget(self.bw)
+        self.setui()
 
-    def sethtml(self, str):
+    def sethtml(self, str='hahah'):
         self.bw.setHtml(str)
 
     def setui(self):
         self.setStyleSheet('''
-            border:0px;
+            border:2px solid #698FBF;
             padding:0px;
             margin:0px;
-            border-bottom-right-radius: 8px;
-            border-bottom-left-radius: 8px;''')
+            border-radius: 8px;''')
 
 
 class Button4Icon(QtWidgets.QPushButton):

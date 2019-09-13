@@ -11,7 +11,7 @@ from PyQt5.QtCore import pyqtSignal
 from IEC103 import analysis
 from download_win import File_dowload, OpenTip
 from feedback_win import FeedBack
-from override import TextView, Button4Icon
+from override import TextView, Button4Icon, WebView
 from remote_login_win import Login
 from setting_win import Setting
 
@@ -66,7 +66,7 @@ class Msg_als(QtWidgets.QMainWindow):
 		self.action_feedback.triggered.connect(self.feedwin.show)
 		self.feeder_cabin.triggered.connect(self.style_feeder)
 		self.incoming_cabinet_201_202.triggered.connect(self.style_incoming)
-		self.pushButton_note.clicked.connect(self.open_edit)
+		# self.pushButton_note.clicked.connect(self.open_edit)
 		self.pushButton_save.clicked.connect(self.save_file)
 		self.pushButton_search.clicked.connect(self.search)
 		self.comboBox_date1.currentIndexChanged.connect(self.change_timelist_1)
@@ -206,9 +206,9 @@ class Msg_als(QtWidgets.QMainWindow):
 		self.left_layout.addWidget(self.pushButton_note, 7)
 		self.left_layout.addWidget(self.pushButton_save, 8)
 		"""给右窗口添加部件"""
-		self.display_select = TextView()
-		self.display_select.setReadOnly(True)
+		# self.display_select = TextView()
 		# self.display_select.setReadOnly(True)
+		self.display_select = WebView()
 		self.right_layout.addWidget(self.display_select, 0, 2, 10, 6)
 		self.right_layout.addWidget(self.transform_widget, 0, 8, 10, 5)
 		self.widget_title = QtWidgets.QFrame()
@@ -418,23 +418,16 @@ class Msg_als(QtWidgets.QMainWindow):
 			border-bottom-right-radius: 1px;}
 			''')
 		self.transform_widget.setStyleSheet('''
-			QFrame#title{background-color: #232F3F;
-			border-top-left-radius:1px;border-top-right-radius:1px;}
-			QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
-		self.display_select.setStyleSheet('''
-			QTextEdit{
-			color:#000000;
-			border-radius:8px;
-			border:2px solid #698FBF;
-			font:75 8pt "Consolas";
-			width:300px;}''')
+				QFrame#title{background-color: #232F3F;
+				border-top-left-radius:1px;border-top-right-radius:1px;}
+				QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
 		self.menubar.setStyleSheet('''
-			menu_F:hover{
-			background-color:#4B6EAF;}''')
+				menu_F:hover{
+				background-color:#4B6EAF;}''')
 		self.statusbar.setStyleSheet('''
-			background-color:#FFFFFF;''')
+				background-color:#FFFFFF;''')
 		self.main_widget.setStyleSheet('''
-			background-color:#FFFFFF;''')
+				background-color:#FFFFFF;''')
 
 	def clear(self):
 		self.display_source.clear()
@@ -455,18 +448,16 @@ class Msg_als(QtWidgets.QMainWindow):
 		"""重新打开文件重置窗口"""
 		self.display_source.clear()
 		self.display_result.clear()
-		self.display_select.clear()
 		self.comboBox_date1.clear()
 		self.comboBox_time1.clear()
 		self.comboBox_date2.clear()
 		self.comboBox_time2.clear()
 		global dates_list
 		dates_list = collections.OrderedDict()
-		print(connect)
+		# print(connect)
 		global file
 		if connect:
-			file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', connect,
-			                                                'Text Files (*.txt)')
+			file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', connect, 'Text Files (*.txt)')
 		else:
 			file, _ = QtWidgets.QFileDialog.getOpenFileName(self, '打开', 'C:\\Users\\qiubi\\Desktop',
 			                                                'Text Files (*.txt)')
@@ -531,7 +522,6 @@ class Msg_als(QtWidgets.QMainWindow):
 
 	def search(self):
 		"""按时间段进行搜索"""
-		self.display_select.clear()
 		try:
 			for i in range(list(dates_list.keys()).index(self.comboBox_date1.currentText()),
 			               list(dates_list.keys()).index(self.comboBox_date2.currentText()) + 1):
@@ -686,7 +676,7 @@ class Msg_als(QtWidgets.QMainWindow):
 						search_result += temp_message
 						temp_message.clear()
 						rev_signal3 = False
-		self.display_select.setHtml(self.createhtml(search_result, date, time))
+		self.display_select.sethtml(self.createhtml(search_result, date, time))
 		QtWidgets.QApplication.processEvents()
 		file_temp.close()
 
@@ -696,13 +686,15 @@ class Msg_als(QtWidgets.QMainWindow):
 			for item in result_list:
 				result_str += (self.word2html(item, 0))
 			html = '<body background-color: #0033FF>' + self.display_select.toHtml() + \
-			       '<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time + \
-			       '</h2><hr>' + result_str + '</body>'
+				'<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time + \
+				'</h2><hr>' + result_str + '</body>'
 		else:
 			html = '<body background-color: #0033FF>' + self.display_select.toHtml() + \
-			       '<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time \
-			       + '</h2><hr style="height:1px;border:none;border-top:1px dashed #0066CC;">' \
-			         '<p style="color:#1c1259;text-align:center;font-family:"等线"">无记录</p>' + '</body>'
+				'<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time \
+				+ '</h2><hr style="height:1px;border:none;border-top:1px dashed #0066CC;">' \
+				'<p style="color:#1c1259;text-align:center;font-family:"等线"">无记录</p>' + '</body>'
+		print(html)
+		print('test')
 		return html
 
 	def word2html(self, src, line):
