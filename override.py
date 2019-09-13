@@ -3,8 +3,29 @@ import qtawesome
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QColor
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 from button_beautify import AnimationShadowEffect
+
+
+class web(QtWidgets.QFrame):
+    def __init__(self):
+        super().__init__()
+        self.bw = QWebEngineView()
+        self.layout = QtWidgets.QGridLayout()
+        self.setLayout(self.layout)
+        self.layout.addWidget(self.bw)
+
+    def sethtml(self, str):
+        self.bw.setHtml(str)
+
+    def setui(self):
+        self.setStyleSheet('''
+            border:0px;
+            padding:0px;
+            margin:0px;
+            border-bottom-right-radius: 8px;
+            border-bottom-left-radius: 8px;''')
 
 
 class Button4Icon(QtWidgets.QPushButton):
