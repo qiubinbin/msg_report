@@ -189,7 +189,7 @@ def asdu_analysis(asdu_message: str, control_message: str):
         content_asdu += '<br>' + asdu[22:24] + '&nbsp;&nbsp;附加信息SIN:' + str(int(asdu[22:24], 16))
     # TODO
     # 其他类型未在PSCADA看到，暂不分析
-    print('zheli' + content_asdu)
+    # print('zheli' + content_asdu)
     return content_asdu
 
 
@@ -200,7 +200,7 @@ def analysis(message: str):
     if re.match(re.compile(r'^10'), message):
         message_type += '<h3>固定帧长报文</h3><hr>'
         result = re.match(pattern_fixed, message)
-        dict_message[result['head']] = '&nbsp;&nbsp;&nbsp;启动字符'
+        dict_message[result['head']] = '&nbsp;&nbsp;启动字符'
         dict_message[result['code']] = '&nbsp;&nbsp;控制域<br>' + control_analysis(
             result['code'])
         dict_message[result['addr']] = '&nbsp;&nbsp;地址域'
