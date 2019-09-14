@@ -198,9 +198,7 @@ def analysis(message: str):
     dict_message = collections.OrderedDict()
     message_type = ''
     if re.match(re.compile(r'^10'), message):
-        message_type += '&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;' \
-                        '固定帧长报文' \
-                        '&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;<hr>'
+        message_type += '<h3>固定帧长报文</h3><hr>'
         result = re.match(pattern_fixed, message)
         dict_message[result['head']] = '&nbsp;&nbsp;&nbsp;启动字符'
         dict_message[result['code']] = '&nbsp;&nbsp;控制域<br>' + control_analysis(
@@ -210,9 +208,7 @@ def analysis(message: str):
         dict_message[result['end']] = '&nbsp;&nbsp;结束字符'
 
     elif re.match(re.compile(r'^68'), message):
-        message_type += '&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;' \
-                        '可变帧长报文' \
-                        '&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;&#9107;<hr>'
+        message_type += '<h3>可变帧长报文</h3><hr>'
         result = re.match(pattern_variable, message)
         dict_message[result[
             'head']] = '&nbsp;&nbsp;&nbsp;启动帧<br>&nbsp;&nbsp;&nbsp;' + '启动字符:68<br>&nbsp;&nbsp;&nbsp;' + '长度:' + str(

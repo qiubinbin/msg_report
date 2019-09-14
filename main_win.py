@@ -193,11 +193,8 @@ class Msg_als(QtWidgets.QMainWindow):
 		self.display_source = TextView()
 		self.display_source.setToolTip('请在此处输入数据源')
 		self.display_result = TextView()
-		self.display_result.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)  # 关闭自带菜单
 		self.display_result.setReadOnly(True)
 		self.display_result.setToolTip('此处显示分析结果')
-		self.display_result.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-		self.display_result.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
 		"""给左窗口添加部件"""
 		self.left_layout.addWidget(self.begin_label, 0)
 		self.left_layout.addWidget(self.end_label, 3)
@@ -245,13 +242,13 @@ class Msg_als(QtWidgets.QMainWindow):
 			border:none;
 			background-color:none;
 			font:75 10pt "微软雅黑";''')
+		self.display_result.setStyleSheet('''
+			border:2px solid #698FBF;
+			border-radius: 8px;''')
 		self.display_source.setStyleSheet('''
 			border:2px solid #698FBF;
 			border-bottom-right-radius: 8px;
 			border-bottom-left-radius: 8px;''')
-		self.display_result.setStyleSheet('''
-			border:2px solid #698FBF;
-			border-radius: 8px;''')
 
 	def style_incoming(self):
 		self.is_feeder = False
@@ -435,9 +432,9 @@ class Msg_als(QtWidgets.QMainWindow):
 
 	def save_file(self):
 		try:
-			path, _ = QtWidgets.QFileDialog.getSaveFileName(self, '打开', 'C:\\', 'Text Files (*.txt)')
+			path, _ = QtWidgets.QFileDialog.getSaveFileName(self, '打开', 'C:\\', 'Html Files (*.html)')
 			f = open(path, mode='w', encoding='utf-8')
-			f.write(str(self.display_select.toPlainText()))
+			f.write(self.display_select.temp_html)
 			f.close()
 			self.statusbar.showMessage('已保存至' + path, msecs=700)
 		except:
@@ -446,6 +443,7 @@ class Msg_als(QtWidgets.QMainWindow):
 	def open_file(self, connect=None):
 		"""文件打开显示并生成日期目录 """
 		"""重新打开文件重置窗口"""
+		self.display_select.clear()
 		self.display_source.clear()
 		self.display_result.clear()
 		self.comboBox_date1.clear()
@@ -521,6 +519,7 @@ class Msg_als(QtWidgets.QMainWindow):
 			pass
 
 	def search(self):
+		self.display_select.clear()  # 搜索前重置缓存
 		"""按时间段进行搜索"""
 		try:
 			for i in range(list(dates_list.keys()).index(self.comboBox_date1.currentText()),
@@ -682,19 +681,15 @@ class Msg_als(QtWidgets.QMainWindow):
 
 	def createhtml(self, result_list, date, time):
 		result_str = ''
-		if list:
-			for item in result_list:
-				result_str += (self.word2html(item, 0))
-			html = '<body background-color: #0033FF>' + self.display_select.toHtml() + \
-				'<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time + \
-				'</h2><hr>' + result_str + '</body>'
+		if result_list:
+			for index, item in enumerate(result_list):
+				if index == 0:
+					result_str += self.word2html(item, 0)
+				else:
+					result_str += ('<br/>' + self.word2html(item, 0))
+			html = '<div style="font-size:12;background-color:#5E98AC;border-radius:8px;padding:0px 2px 2px 4px">' + '<h2 style="color:#FFFFFF">' + date + ' ' + time + '</h2><p style="line-height:17px;text-align:left;color:#FFFFFF;font-family:"Courier New"">' + result_str + '</p></div>'
 		else:
-			html = '<body background-color: #0033FF>' + self.display_select.toHtml() + \
-				'<h2 style="color:#5ba19b;text-align:center">' + date + ' ' + time \
-				+ '</h2><hr style="height:1px;border:none;border-top:1px dashed #0066CC;">' \
-				'<p style="color:#1c1259;text-align:center;font-family:"等线"">无记录</p>' + '</body>'
-		print(html)
-		print('test')
+			html = '<div style="font-size:12;background-color:#DB6E8E;border-radius:8px;padding:0px 2px 2px 4px">' + '<h2 style="color:#FFFFFF">' + date + ' ' + time + '</h2><p style="text-align:left;color:#FFFFFF;text-align:center;font-family:"微软雅黑"">无记录</p>' + '</div>'
 		return html
 
 	def word2html(self, src, line):
@@ -705,10 +700,9 @@ class Msg_als(QtWidgets.QMainWindow):
 			'           ',
 			'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
 		src = src.replace(
-			'TX', '<font style="font-weight:bold;color:#db2d43">TX</font>')
+			'TX', '<font style="font-weight:bold;">TX</font>')
 		src = src.replace(
-			'RX', '<font style="font-weight:bold;color:#00bd56">RX</font>')
-		src = '<p style="text-align:left">' + src + '</p>'
+			'RX', '<font style="font-weight:bold;">RX</font>')
 		return src
 
 	def open_edit(self):
