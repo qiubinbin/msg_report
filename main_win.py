@@ -327,13 +327,6 @@ class Msg_als(QtWidgets.QMainWindow):
 			QFrame#title{background-color: #232F3F;
 			border-top-left-radius:1px;border-top-right-radius:1px;}
 			QPushButton{border:none;background-color:none;color:#F49900;font:75 10pt "微软雅黑";}''')
-		self.display_select.setStyleSheet('''
-			QTextEdit{
-			color:#000000;
-			border-radius:8px;
-			border:2px solid #698FBF;
-			font:75 8pt "Consolas";
-			width:300px;}''')
 		self.menubar.setStyleSheet('''
 			menu_F:hover{
 			background-color:#4B6EAF;}''')
